@@ -1,4 +1,4 @@
-#include "include/board.h"
+#include "board.h"
 
 Board* newBoard(int row, int col){
     Board *b = malloc(sizeof (Board));

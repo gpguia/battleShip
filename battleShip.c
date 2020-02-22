@@ -1,4 +1,4 @@
-#include "include/battleShip.h"
+#include "battleShip.h"
 
 int main (void){
     Board *b = newBoard(10,12);
