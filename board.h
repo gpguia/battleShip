@@ -4,8 +4,11 @@
 
 typedef struct _Board{
     int **board;
-    int r;
-    int c;
+    int rowSize;
+    int colSize;
 } Board;
 
-Board* newBoard(int n, int m);
+
+
+Board* newBoard(int row, int col);
+void clearBoard(Board* b);
