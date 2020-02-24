@@ -36,4 +36,3 @@ int main (void){
     clearBoard(b);
     return 0;
 }
-
