@@ -1,4 +1,4 @@
-
+#include <stdbool.h>
 
 typedef struct _Coordinate{
     int row;
@@ -7,11 +7,11 @@ typedef struct _Coordinate{
 
 
 enum ShipType{
-    CARRIER, 
-    BATTLESHIP,
-    CRUISER, 
-    SUBMARINE,
-    DESTROYER
+    CARRIER,  //5
+    BATTLESHIP, //4
+    CRUISER,   //3
+    SUBMARINE,  //3
+    DESTROYER  //2
 };
 
 typedef struct _Ship{
