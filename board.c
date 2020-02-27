@@ -18,6 +18,9 @@ Board* newBoard(int row, int col){
     return b;
 }
 
+
+
+
 void clearBoard(Board* b){    
     for(int i=0; i<b->rowSize; i++){
         free(b->board[i]);
@@ -78,6 +81,27 @@ void printBoard(Board* b){
 		}
 		printf("\n");
 	}
+}
+
+void printBoardPlayer1(Board* b){
+
+	printf("\n");
+	printf("\t\t\tPLayer1\n");
+	printf("\n");
+
+	for(int i=0;i<rowSize;i++){
+		printf("\t%d|",i);
+		for(int j=0;j<colSize;j++){
+			printf(" ~ |",j);
+		}
+		printf("\n");
+	}
+
+	printf("\t   ");
+	for(int k=0;k<colSize;k++){
+		printf("%d | ",k);
+	}
+	printf("\n");
 }
 
 void randomPlaceShips(Board *b){
