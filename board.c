@@ -25,53 +25,131 @@ void clearBoard(Board* b){
     free(b);
 }
 
-Board* setShipPos(Board *b, Coordinate s, Coordinate e){
-    int x = (e.row - s.row);
-    int y = (e.col - s.col);
-
-    if((s.row > b->rowSize || s.col > b->colSize) || (e.col > b->colSize || e.row > b->rowSize))
-        return b;
-
-    if((s.row < 0 || s.col < 0) || (e.col < 0 || e.row < 0))
-        return b;
-
-    printf("x: %d\n",x);
-    printf("y: %d\n",y);
-    if(x > 5 || y > 5){
-        return b;
+bool isValidPos(Board* b, Ship ship){
+    if(ship.start.col < 0 || ship.start.row < 0){
+        return false;
     }
 
-    if(y == 0){ //horizontal
-        for(int i=0;i<e.row;i++){
-            b->board[s.row][i] = 1;
-        }
-    }else if(x == 0){//vertical
-        for(int j=0;j<e.col;j++){
-            b->board[j][s.col] = 1;
-        }
-    }
-    return b;
-}
-
-
-void randomPlaceShips(Board *b){
-    int x,y, pos[5];
-    Coordinate start;
-    srand(time(0));
-    
-    for(int i=0;i<5;i++){ //randomize number to choose the way the ship will be put
-        pos[i] = rand();
-    }
-    if(pos[0] % 2 == 0){//CARRIER will be horizontal
-        x = (rand() % (b->rowSize + 1));
-        y = (rand() % (b->rowSize + 1));
-        if(x + 5 <= b->rowSize){
-
+    if(ship.isHorizontal){
+        if(ship.length + ship.start.col > b->colSize){
+            return false;
         }
     }else{
-
+        if(ship.length + ship.start.row > b->rowSize){
+            return false;
+        }
     }
-    printf("x: %d\n",x);
-    printf("y: %d\n",y);
 
+    for(int i = 0; i < ship.length - 1; i++){
+        if(ship.isHorizontal){
+            if(b->board[ship.start.row][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize) // -1 is water
+                return false;
+        }else{//vertical
+            if(b->board[ship.start.row + i][ship.start.col] != -1 && (ship.start.row + i) < b->rowSize) // -1 is water
+                return false;
+        }
+    }
+    return true;
+}
+
+bool setShipPos(Board *b, Ship ship){
+
+    if(!isValidPos(b,ship)){
+        // printf("ERROR: This is an invalid POS :(\n");
+        return false;
+    }
+
+    if(ship.isHorizontal){ //horizontal
+        for(int i=0;i<ship.length;i++){
+            b->board[ship.start.row][ship.start.col + i] = ship.type;
+        }
+    }else{//vertical
+        for(int j=0;j<ship.length;j++){
+            b->board[ship.start.row + j][ship.start.col] = ship.type;
+        }
+    }
+    return true;
+}
+
+void printBoard(Board* b){
+	for(int i=0;i<b->colSize;i++){
+		for(int j=0;j<b->rowSize;j++){
+			printf("\t%d ",b->board[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void randomPlaceShips(Board *b){
+    Ship s1,s2,s3,s4,s5;
+    Coordinate s;
+    srand(time(0));
+    bool isNotOnBoard = true;
+
+    s1.isAlive = true;
+    s1.length = CARRIER_SIZE;
+    s1.type = CARRIER;
+    while(isNotOnBoard){
+        s1.start.row = (rand() % (b->rowSize - CARRIER_SIZE));
+        s1.start.col = (rand() % (b->colSize - CARRIER_SIZE));
+        s1.isHorizontal = (rand() % 2);
+        bool aux = setShipPos(b,s1);
+        if(aux == true){
+            isNotOnBoard = false;
+        }
+    }
+    
+    // printBoard(b);
+    
+    isNotOnBoard = true;
+    s2.isAlive = true;
+    s2.length = BATTLESHIP_SIZE;
+    s2.type = BATTLESHIP;
+    while(isNotOnBoard){
+        s2.start.row = (rand() % (b->rowSize - BATTLESHIP_SIZE));
+        s2.start.col = (rand() % (b->colSize - BATTLESHIP_SIZE));
+        s2.isHorizontal = (rand() % 2);
+        bool aux = setShipPos(b,s2);
+        if(aux == true)
+            isNotOnBoard = false;
+    }
+
+    isNotOnBoard = true;
+    s3.isAlive = true;
+    s3.length = CRUSIER_SIZE;
+    s3.type = CRUISER;
+    while(isNotOnBoard){
+        s3.start.row = (rand() % (b->rowSize - CRUSIER_SIZE));
+        s3.start.col = (rand() % (b->colSize - CRUSIER_SIZE));
+        s3.isHorizontal = (rand() % 2);
+        bool aux = setShipPos(b,s3);
+        if(aux == true)
+            isNotOnBoard = false;
+    }
+    
+    isNotOnBoard = true;
+    s4.isAlive = true;
+    s4.length = SUBMARINE_SIZE;
+    s4.type = SUBMARINE;
+    while(isNotOnBoard){
+        s4.start.row = (rand() % (b->rowSize - SUBMARINE_SIZE));
+        s4.start.col = (rand() % (b->colSize - SUBMARINE_SIZE));
+        s4.isHorizontal = (rand() % 2);
+        bool aux = setShipPos(b,s4);
+        if(aux == true)
+            isNotOnBoard = false;
+    }
+
+    isNotOnBoard = true;
+    s5.isAlive = true;
+    s5.length = DESTROYER_SIZE;
+    s5.type = DESTROYER;
+    while(isNotOnBoard){
+        s5.start.row = (rand() % (b->rowSize - DESTROYER_SIZE));
+        s5.start.col = (rand() % (b->colSize - DESTROYER_SIZE));
+        s5.isHorizontal = (rand() % 2);
+        bool aux = setShipPos(b,s5);
+        if(aux == true)
+            isNotOnBoard = false;
+    }
 }

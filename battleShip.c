@@ -6,21 +6,9 @@ int main (void){
     Board* p1 = newBoard(10,10);
 	Board* p2 = newBoard(10,10);
 
-	// randomPlaceShips(p1);
-	Coordinate s,e;
-	s.row = 9;
-	s.col = 0;
-	e.col = 0;
-	e.row = 6;
-
-	setShipPos(p1,s,e);
-
-	for(int i=0;i<p1->colSize;i++){
-		for(int j=0;j<p1->rowSize;j++){
-			printf(" %.d ",p1->board[i][j]);
-		}
-		printf("\n");
-	}
+	randomPlaceShips(p1);
+	
+	printBoard(p1);
 
     clearBoard(p1);
 	clearBoard(p2);

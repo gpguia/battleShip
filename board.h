@@ -16,4 +16,8 @@ Board* newBoard(int row, int col);
 void clearBoard(Board* b);
 
 void randomPlaceShips(Board *b);
-Board* setShipPos(Board *b, Coordinate s, Coordinate e);
+bool setShipPos(Board *b, Ship ship);
+
+bool isValidPos(Board* b, Ship ship);
+
+void printBoard(Board* b);
