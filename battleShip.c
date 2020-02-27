@@ -1,5 +1,21 @@
 #include "battleShip.h"
 
+int main (void){
+	// printRules();
+
+    Board* p1 = newBoard(10,10);
+	Board* p2 = newBoard(10,10);
+
+	randomPlaceShips(p1);
+	
+	printBoard(p1);
+
+    clearBoard(p1);
+	clearBoard(p2);
+    return 0;
+}
+
+
 void printRules(){
 	printf("   Batalha Naval é um jogo de tabuleiro de apenas 2 jogadores com um unico objetivo, tentar adivinhar a localização dos navios de guerra do adversario. \n");
 	printf("   Teremos dois modos de jogo : Automático e Manual.\n");
@@ -25,15 +41,3 @@ void printRules(){
 	printf("\n");
 	printf("   Jogo termina quando após varias jogadas um dos jogadores conseguir derrubar todos os navios do adversário \n");
 }
-
-int main (void){
-    Board* b = newBoard(10,12);
-
-    printf("%d\n", b->board[0][0]);
-
-    printRules();
-
-    clearBoard(b);
-    return 0;
-}
-

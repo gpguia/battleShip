@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h> 
+#include "ships.h"
 
 typedef struct _Board{
     int **board;
@@ -12,3 +14,10 @@ typedef struct _Board{
 
 Board* newBoard(int row, int col);
 void clearBoard(Board* b);
+
+void randomPlaceShips(Board *b);
+bool setShipPos(Board *b, Ship ship);
+
+bool isValidPos(Board* b, Ship ship);
+
+void printBoard(Board* b);
