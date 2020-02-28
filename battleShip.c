@@ -4,14 +4,15 @@ int main (void){
 	// printRules();
 
     Board* p1 = newBoard(10,10);
-	Board* p2 = newBoard(10,10);
+	  Board* p2 = newBoard(10,10);
 
 	randomPlaceShips(p1);
-	
-	printBoard(p1);
+  printBoard(p1);
+  randomPlaceShips(p2);
+  printBoard(p2);
 
     clearBoard(p1);
-	clearBoard(p2);
+    clearBoard(p2);
     return 0;
 }
 
@@ -24,7 +25,7 @@ void printRules(){
 	printf("\n");
 	printf("   Regras de preparação do jogo: \n");
 	printf("   * Navios podem ter variada dimensão , dimensão esta marcada por quadriculas. Cada quadricula tem um coordenadas X e uma Y. \n");
-	printf("   * Não podem ser sobrepostos navios. \n");	 
+	printf("   * Não podem ser sobrepostos navios. \n");
 	printf("   * Batalha é jogada por alternadamente entre os jogadores. \n");
 	printf("\n");
 	printf("   Regras de jogo: \n");

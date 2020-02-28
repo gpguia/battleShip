@@ -1,7 +1,7 @@
 OBJS=battleShip.o board.o
 CC=gcc
 PROGRAM=./battleShip
-CFLAGS=-std=c99
+CFLAGS=-std=c99 -D_POSIX_C_SOURCE=199309L
 INDIR=./inputs/
 
 

@@ -21,7 +21,7 @@ Board* newBoard(int row, int col){
 
 
 
-void clearBoard(Board* b){    
+void clearBoard(Board* b){
     for(int i=0; i<b->rowSize; i++){
         free(b->board[i]);
     }
@@ -74,31 +74,24 @@ bool setShipPos(Board *b, Ship ship){
     return true;
 }
 
-void printBoard(Board* b){
-	for(int i=0;i<b->colSize;i++){
-		for(int j=0;j<b->rowSize;j++){
-			printf("\t%d ",b->board[i][j]);
-		}
-		printf("\n");
-	}
-}
-
-void printBoardPlayer1(Board* b){
-
+void printBoard(Board *b){
 	printf("\n");
 	printf("\t\t\tPLayer1\n");
 	printf("\n");
 
-	for(int i=0;i<rowSize;i++){
+	for(int i=0;i<b->rowSize;i++){
 		printf("\t%d|",i);
-		for(int j=0;j<colSize;j++){
-			printf(" ~ |",j);
-		}
+		for(int j=0;j<b->colSize;j++){
+      if(b->board[i][j]==-1)
+        printf(" ~ |",j);
+      else if(b->board[i][j] == 0 || b->board[i][j] == 1 || b->board[i][j] == 2 || b->board[i][j] == 3 ||b->board[i][j] == 4 )
+        printf(" O |",j);
+    }
 		printf("\n");
 	}
 
 	printf("\t   ");
-	for(int k=0;k<colSize;k++){
+	for(int k=0;k<b->colSize;k++){
 		printf("%d | ",k);
 	}
 	printf("\n");
@@ -107,7 +100,10 @@ void printBoardPlayer1(Board* b){
 void randomPlaceShips(Board *b){
     Ship s1,s2,s3,s4,s5;
     Coordinate s;
-    srand(time(0));
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    srand((time_t)ts.tv_nsec);
+
     bool isNotOnBoard = true;
 
     s1.isAlive = true;
@@ -122,9 +118,9 @@ void randomPlaceShips(Board *b){
             isNotOnBoard = false;
         }
     }
-    
+
     // printBoard(b);
-    
+
     isNotOnBoard = true;
     s2.isAlive = true;
     s2.length = BATTLESHIP_SIZE;
@@ -150,7 +146,7 @@ void randomPlaceShips(Board *b){
         if(aux == true)
             isNotOnBoard = false;
     }
-    
+
     isNotOnBoard = true;
     s4.isAlive = true;
     s4.length = SUBMARINE_SIZE;
