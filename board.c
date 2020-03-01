@@ -1,5 +1,6 @@
 #include "board.h"
 
+
 Board* newBoard(int row, int col){
     Board *b = malloc(sizeof (Board));
 
@@ -74,6 +75,13 @@ bool setShipPos(Board *b, Ship ship){
     return true;
 }
 
+Board* tiro(Board *pl1, Board *pl2, Coordinate shot){
+	if(pl2->[shot.row][shot.col]==1 || pl2->[shot.row][shot.col]==2 || pl2->[shot.row][shot.col]==3 || pl2->[shot.row][shot.col]==4)
+		pl1->[shot.row][shot.col]=5;
+	else if(pl2->[shot.row][shot.col]==-1)
+		pl1->[shot.row][shot.col]=6;	
+}
+
 void printBoard(Board *b){
 	printf("\n");
 	printf("\t\t\tPLayer1\n");
@@ -82,10 +90,14 @@ void printBoard(Board *b){
 	for(int i=0;i<b->rowSize;i++){
 		printf("\t%d|",i);
 		for(int j=0;j<b->colSize;j++){
-      if(b->board[i][j]==-1)
-        printf(" ~ |",j);
-      else if(b->board[i][j] == 0 || b->board[i][j] == 1 || b->board[i][j] == 2 || b->board[i][j] == 3 ||b->board[i][j] == 4 )
-        printf(" O |",j);
+      		if(b->board[i][j]==-1)
+        		printf(" ~ |");
+        	if(b->board[i][j]==5)   //5 significa que algum barco foi atingido
+        		printf(" ⊗ |");
+        	if(b->board[i][j]==6)   //6 significa que acertou na agua
+        		printf(" X |");
+      		else if(b->board[i][j] == 0 || b->board[i][j] == 1 || b->board[i][j] == 2 || b->board[i][j] == 3 ||b->board[i][j] == 4 )
+        	printf(" O |");
     }
 		printf("\n");
 	}
@@ -96,6 +108,9 @@ void printBoard(Board *b){
 	}
 	printf("\n");
 }
+
+
+
 
 void randomPlaceShips(Board *b){
     Ship s1,s2,s3,s4,s5;

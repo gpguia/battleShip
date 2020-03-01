@@ -15,6 +15,8 @@ typedef struct _Board{
 Board* newBoard(int row, int col);
 void clearBoard(Board* b);
 
+Board* tiro(Board *pl1, Board *pl2 , Coordinate shot);
+
 void randomPlaceShips(Board *b);
 bool setShipPos(Board *b, Ship ship);
 

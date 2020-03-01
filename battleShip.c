@@ -4,12 +4,12 @@ int main (void){
 	// printRules();
 
     Board* p1 = newBoard(10,10);
-	  Board* p2 = newBoard(10,10);
+	Board* p2 = newBoard(10,10);
 
 	randomPlaceShips(p1);
-  printBoard(p1);
-  randomPlaceShips(p2);
-  printBoard(p2);
+  	printBoard(p1);
+  	randomPlaceShips(p2);
+  	printBoard(p2);
 
     clearBoard(p1);
     clearBoard(p2);
