@@ -3,6 +3,11 @@
 int main (void){
 	// printRules();
 
+	int tmp=0;
+	int turn=1;
+	int coordX,coordY;
+	Coordinate shot;
+
     Board* p1 = newBoard(10,10);
 	Board* p2 = newBoard(10,10);
 
@@ -17,6 +22,41 @@ int main (void){
 	printf("\n");
   	printBoard(p2);
 
+  	while(tmp==0){
+  		if(turn==1){
+  			for(int i=0; i<3; i++){
+  				scanf("%d %d",&coordX,&coordY);
+  				shot.row=coordY;
+  				shot.col=coordX;
+  				shoot(p1,p2,shot);
+  				printf("\n");
+				printf("\t\t\tPLayer1\n");
+				printf("\n");
+  				printBoard(p1);
+  				printf("\n");
+				printf("\t\t\tPLayer2\n");
+				printf("\n");  				
+  				printBoard(p2);
+  			}
+  			turn=0;	
+  		}
+  		if(turn==0){
+  			for(int i=0; i<3; i++){
+  				scanf("%d %d",&coordX,&coordY);
+  				shot.row=coordY;
+  				shot.col=coordX;
+  				shoot(p2,p1,shot);
+  				printf("\n");
+				printf("\t\t\tPLayer1\n");
+				printf("\n");  				
+  				printBoard(p1);
+  				printf("\n");
+				printf("\t\t\tPLayer2\n");
+				printf("\n");  				
+  				printBoard(p2);	
+  			}	
+  		}	
+  	}
   	
     clearBoard(p1);
     clearBoard(p2);
