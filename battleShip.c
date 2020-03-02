@@ -7,10 +7,17 @@ int main (void){
 	Board* p2 = newBoard(10,10);
 
 	randomPlaceShips(p1);
+  	printf("\n");
+	printf("\t\t\tPLayer1\n");
+	printf("\n");
   	printBoard(p1);
   	randomPlaceShips(p2);
+  	printf("\n");
+	printf("\t\t\tPLayer2\n");
+	printf("\n");
   	printBoard(p2);
 
+  	
     clearBoard(p1);
     clearBoard(p2);
     return 0;

@@ -4,6 +4,9 @@
 #include <time.h> 
 #include "ships.h"
 
+#define BOAT_SHOT 5
+#define WATER_SHOT 6
+
 typedef struct _Board{
     int **board;
     int rowSize;
@@ -15,7 +18,7 @@ typedef struct _Board{
 Board* newBoard(int row, int col);
 void clearBoard(Board* b);
 
-Board* tiro(Board *pl1, Board *pl2 , Coordinate shot);
+Board* shoot(Board *pl1, Board *pl2 , Coordinate shot);
 
 void randomPlaceShips(Board *b);
 bool setShipPos(Board *b, Ship ship);

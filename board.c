@@ -75,26 +75,24 @@ bool setShipPos(Board *b, Ship ship){
     return true;
 }
 
-Board* tiro(Board *pl1, Board *pl2, Coordinate shot){
-	if(pl2->[shot.row][shot.col]==1 || pl2->[shot.row][shot.col]==2 || pl2->[shot.row][shot.col]==3 || pl2->[shot.row][shot.col]==4)
-		pl1->[shot.row][shot.col]=5;
-	else if(pl2->[shot.row][shot.col]==-1)
-		pl1->[shot.row][shot.col]=6;	
+Board* shoot(Board *plAtirador, Board *plAdvers, Coordinate shot){
+	if(plAdvers->board[shot.row][shot.col]==0 || plAdvers->board[shot.row][shot.col]==1 || plAdvers->board[shot.row][shot.col]==2 || plAdvers->board[shot.row][shot.col]==3 || plAdvers->board[shot.row][shot.col]==4)
+		plAtirador->board[shot.row][shot.col]=5;
+	else if(plAdvers->board[shot.row][shot.col]==-1)
+		plAtirador->board[shot.row][shot.col]=6;	
 }
 
 void printBoard(Board *b){
-	printf("\n");
-	printf("\t\t\tPLayer1\n");
-	printf("\n");
+	
 
 	for(int i=0;i<b->rowSize;i++){
 		printf("\t%d|",i);
 		for(int j=0;j<b->colSize;j++){
       		if(b->board[i][j]==-1)
         		printf(" ~ |");
-        	if(b->board[i][j]==5)   //5 significa que algum barco foi atingido
+        	if(b->board[i][j]==BOAT_SHOT)   //5 significa que algum barco foi atingido
         		printf(" ⊗ |");
-        	if(b->board[i][j]==6)   //6 significa que acertou na agua
+        	if(b->board[i][j]==WATER_SHOT)   //6 significa que acertou na agua
         		printf(" X |");
       		else if(b->board[i][j] == 0 || b->board[i][j] == 1 || b->board[i][j] == 2 || b->board[i][j] == 3 ||b->board[i][j] == 4 )
         	printf(" O |");
