@@ -11,6 +11,7 @@ typedef struct _Board{
     int **board;
     int rowSize;
     int colSize;
+    Ship ships[5];
 } Board;
 
 

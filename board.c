@@ -127,11 +127,10 @@ void randomPlaceShips(Board *b){
         s1.isHorizontal = (rand() % 2);
         bool aux = setShipPos(b,s1);
         if(aux == true){
+            b->ships[0] = s1;
             isNotOnBoard = false;
         }
     }
-
-    // printBoard(b);
 
     isNotOnBoard = true;
     s2.isAlive = true;
@@ -142,8 +141,10 @@ void randomPlaceShips(Board *b){
         s2.start.col = (rand() % (b->colSize - BATTLESHIP_SIZE));
         s2.isHorizontal = (rand() % 2);
         bool aux = setShipPos(b,s2);
-        if(aux == true)
+        if(aux == true){
+            b->ships[1] = s2;
             isNotOnBoard = false;
+        }
     }
 
     isNotOnBoard = true;
@@ -155,8 +156,11 @@ void randomPlaceShips(Board *b){
         s3.start.col = (rand() % (b->colSize - CRUSIER_SIZE));
         s3.isHorizontal = (rand() % 2);
         bool aux = setShipPos(b,s3);
-        if(aux == true)
+        if(aux == true){
+            b->ships[2] = s3;
             isNotOnBoard = false;
+        }
+            
     }
 
     isNotOnBoard = true;
@@ -168,8 +172,10 @@ void randomPlaceShips(Board *b){
         s4.start.col = (rand() % (b->colSize - SUBMARINE_SIZE));
         s4.isHorizontal = (rand() % 2);
         bool aux = setShipPos(b,s4);
-        if(aux == true)
+        if(aux == true){
+            b->ships[3] = s4;
             isNotOnBoard = false;
+        }
     }
 
     isNotOnBoard = true;
@@ -181,7 +187,9 @@ void randomPlaceShips(Board *b){
         s5.start.col = (rand() % (b->colSize - DESTROYER_SIZE));
         s5.isHorizontal = (rand() % 2);
         bool aux = setShipPos(b,s5);
-        if(aux == true)
+        if(aux == true){
+            b->ships[4] = s5;
             isNotOnBoard = false;
+        }
     }
 }
