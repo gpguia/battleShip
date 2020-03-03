@@ -75,7 +75,7 @@ bool setShipPos(Board *b, Ship ship){
     return true;
 }
 
-Board* shoot(Board *plAtirador, Board *plAdvers, Coordinate shot){
+void shoot(Board *plAtirador, Board *plAdvers, Coordinate shot){
 	if(plAdvers->board[shot.row][shot.col]==0 || plAdvers->board[shot.row][shot.col]==1 || plAdvers->board[shot.row][shot.col]==2 || plAdvers->board[shot.row][shot.col]==3 || plAdvers->board[shot.row][shot.col]==4)
 		plAtirador->board[shot.row][shot.col]=5;
 	else if(plAdvers->board[shot.row][shot.col]==-1)
@@ -112,7 +112,6 @@ void printBoard(Board *b){
 
 void randomPlaceShips(Board *b){
     Ship s1,s2,s3,s4,s5;
-    Coordinate s;
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     srand((time_t)ts.tv_nsec);

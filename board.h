@@ -18,7 +18,7 @@ typedef struct _Board{
 Board* newBoard(int row, int col);
 void clearBoard(Board* b);
 
-Board* shoot(Board *pl1, Board *pl2 , Coordinate shot);
+void shoot(Board *plAtirador, Board *plAdvers, Coordinate shot);
 
 void randomPlaceShips(Board *b);
 bool setShipPos(Board *b, Ship ship);
