@@ -44,7 +44,7 @@ bool isValidPos(Board* b, Ship ship){
         }
     }
 
-    for(int i = 0; i < ship.length - 1; i++){
+    for(int i = 0; i < ship.length; i++){
         if(ship.isHorizontal){
             if(b->board[ship.start.row][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize) // -1 is water
                 return false;
@@ -59,7 +59,6 @@ bool isValidPos(Board* b, Ship ship){
 bool setShipPos(Board *b, Ship ship){
 
     if(!isValidPos(b,ship)){
-        // printf("ERROR: This is an invalid POS :(\n");
         return false;
     }
 
@@ -86,23 +85,49 @@ void printBoard(Board *b){
 	
 
 	for(int i=0;i<b->rowSize;i++){
-		printf("\t%d|",i);
+		printf(KNRM "\t%d|",i);
 		for(int j=0;j<b->colSize;j++){
-      		if(b->board[i][j]==-1)
-        		printf(" ~ |");
-        	if(b->board[i][j]==BOAT_SHOT)   //5 significa que algum barco foi atingido
-        		printf(" ⊗ |");
-        	if(b->board[i][j]==WATER_SHOT)   //6 significa que acertou na agua
-        		printf(" X |");
-      		else if(b->board[i][j] == 0 || b->board[i][j] == 1 || b->board[i][j] == 2 || b->board[i][j] == 3 ||b->board[i][j] == 4 )
-        	printf(" O |");
+            switch(b->board[i][j]){
+                case -1:
+                    printf(KBLU " ~ |"); 
+                    break;
+                case 5:
+                    printf(KRED " ⊗ |");
+                    break;
+                case 6:
+                    printf(KYEL " X |");
+                    break;
+                case 0:
+                    printf(KCYN " C |");
+                    break;
+                case 1:
+                    printf(KCYN " B |");
+                    break;
+                case 2:
+                    printf(KCYN " R |");
+                    break;
+                case 3:
+                    printf(KCYN " S |");
+                    break;
+                case 4:
+                    printf(KCYN " D |");
+                    break;
+            }
+      		// if(b->board[i][j]==-1)
+        	// 	printf(" ~ |");
+        	// if(b->board[i][j]==BOAT_SHOT)   //5 significa que algum barco foi atingido
+        	// 	printf(" ⊗ |");
+        	// if(b->board[i][j]==WATER_SHOT)   //6 significa que acertou na agua
+        	// 	printf(" X |");
+      		// else if(b->board[i][j] == 0 || b->board[i][j] == 1 || b->board[i][j] == 2 || b->board[i][j] == 3 ||b->board[i][j] == 4 )
+        	// printf(" O |");
     }
 		printf("\n");
 	}
 
 	printf("\t   ");
 	for(int k=0;k<b->colSize;k++){
-		printf("%d | ",k);
+		printf(KNRM "%d | ",k);
 	}
 	printf("\n");
 }

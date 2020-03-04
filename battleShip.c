@@ -12,51 +12,52 @@ int main (void){
 	Board* p2 = newBoard(10,10);
 
 	randomPlaceShips(p1);
-  	printf("\n");
-	printf("\t\t\tPLayer1\n");
-	printf("\n");
+  	// printf("\n");
+	// printf("\t\t\tPLayer1\n");
+	// printf("\n");
   	printBoard(p1);
   	randomPlaceShips(p2);
-  	printf("\n");
-	printf("\t\t\tPLayer2\n");
-	printf("\n");
-  	printBoard(p2);
+	printBoard(p2);
+  	// printf("\n");
+	// printf("\t\t\tPLayer2\n");
+	// printf("\n");
+  	// printBoard(p2);
 
-  	while(tmp==0){
-  		if(turn==1){
-  			for(int i=0; i<3; i++){
-  				scanf("%d %d",&coordX,&coordY);
-  				shot.row=coordY;
-  				shot.col=coordX;
-  				shoot(p1,p2,shot);
-  				printf("\n");
-				printf("\t\t\tPLayer1\n");
-				printf("\n");
-  				printBoard(p1);
-  				printf("\n");
-				printf("\t\t\tPLayer2\n");
-				printf("\n");  				
-  				printBoard(p2);
-  			}
-  			turn=0;	
-  		}
-  		if(turn==0){
-  			for(int i=0; i<3; i++){
-  				scanf("%d %d",&coordX,&coordY);
-  				shot.row=coordY;
-  				shot.col=coordX;
-  				shoot(p2,p1,shot);
-  				printf("\n");
-				printf("\t\t\tPLayer1\n");
-				printf("\n");  				
-  				printBoard(p1);
-  				printf("\n");
-				printf("\t\t\tPLayer2\n");
-				printf("\n");  				
-  				printBoard(p2);	
-  			}	
-  		}	
-  	}
+  	// while(tmp==0){
+  	// 	if(turn==1){
+  	// 		for(int i=0; i<3; i++){
+  	// 			scanf("%d %d",&coordX,&coordY);
+  	// 			shot.row=coordY;
+  	// 			shot.col=coordX;
+  	// 			shoot(p1,p2,shot);
+  	// 			printf("\n");
+	// 			printf("\t\t\tPLayer1\n");
+	// 			printf("\n");
+  	// 			printBoard(p1);
+  	// 			printf("\n");
+	// 			printf("\t\t\tPLayer2\n");
+	// 			printf("\n");  				
+  	// 			printBoard(p2);
+  	// 		}
+  	// 		turn=0;	
+  	// 	}
+  	// 	if(turn==0){
+  	// 		for(int i=0; i<3; i++){
+  	// 			scanf("%d %d",&coordX,&coordY);
+  	// 			shot.row=coordY;
+  	// 			shot.col=coordX;
+  	// 			shoot(p2,p1,shot);
+  	// 			printf("\n");
+	// 			printf("\t\t\tPLayer1\n");
+	// 			printf("\n");  				
+  	// 			printBoard(p1);
+  	// 			printf("\n");
+	// 			printf("\t\t\tPLayer2\n");
+	// 			printf("\n");  				
+  	// 			printBoard(p2);	
+  	// 		}	
+  	// 	}	
+  	// }
   	
     clearBoard(p1);
     clearBoard(p2);
