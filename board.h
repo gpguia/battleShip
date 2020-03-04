@@ -6,6 +6,7 @@
 
 #define BOAT_SHOT 5
 #define WATER_SHOT 6
+#define MAX_NUM_SHIPS 5
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -16,23 +17,34 @@
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
 
+struct _Shots{
+    Coordinate target;
+    struct _Shots* next;
+};
+typedef struct _Shots Shots;
+
 typedef struct _Board{
     int **board;
     int rowSize;
     int colSize;
-    Ship ships[5];
+    Ship ships[MAX_NUM_SHIPS];
+    int curQtdShips;
+    Shots* shotsFierd;
 } Board;
 
-
+Shots* newShot(Shots* lst, Coordinate s);
+void delAllShots(Shots *lst);
+void printShots(Shots* lst);
+Shots* searchShot(Shots* lst, Coordinate k);
 
 Board* newBoard(int row, int col);
 void clearBoard(Board* b);
 
-void shoot(Board *plAtirador, Board *plAdvers, Coordinate shot);
+void shoot(Board *b, Coordinate shot, int turn);
+bool isAWaterShot(Board* b, Coordinate t);
 
 void randomPlaceShips(Board *b);
 bool setShipPos(Board *b, Ship ship);
-
 bool isValidPos(Board* b, Ship ship);
 
 void printBoard(Board* b);

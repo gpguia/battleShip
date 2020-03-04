@@ -26,4 +26,5 @@ typedef struct _Ship{
     Coordinate start;
     bool isAlive;
     bool isHorizontal;
+    int shotsRecived;
 } Ship;
