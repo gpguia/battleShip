@@ -41,7 +41,7 @@ Board* newBoard(int row, int col);
 void clearBoard(Board* b);
 
 void shoot(Board *b, Coordinate shot, int turn);
-bool isAWaterShot(Board* b, Coordinate t);
+int isAWaterShot(Board* b, Coordinate t);
 
 void randomPlaceShips(Board *b);
 bool setShipPos(Board *b, Ship ship);

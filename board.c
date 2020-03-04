@@ -80,36 +80,11 @@ bool setShipPos(Board *b, Ship ship){
     return true;
 }
 
-bool isAWaterShot(Board* b, Coordinate t){
-    Ship s;
-    for(int i=0;i<b->curQtdShips;i++){
-        s = b->ships[i];
-        if(s.isAlive){
-            if(s.isHorizontal){
-                for(int j=s.start.col;j<s.length;j++){
-                    printf("H j: %d\n",j);
-                    if(j == t.col && s.start.row == t.row){
-                        printf("Ship: %d\n",s.type);
-                        printf("coords: (%d,%d)\n",t.col,t.row);
-                        return false;
-                    }
-                }
-            }else{
-                printf("start: (%d,%d)\n",s.start.col,s.start.row);
-                printf("length: %d\n",s.length);
-                for(int j=s.start.row;j<=s.length;j++){
-                    // printf("notH j: %d\n",j);
-                    printf("coords: (%d,%d)\n",t.col,j);
-                    if(j == t.row && t.col == s.start.col){
-                        // printf("coords: (%d,%d)\n",t.col,t.row);
-                        return false;
-                    }
-                }
-            }
-        }
-        printf("\n");
+int isAWaterShot(Board* b, Coordinate t){
+    if(b->board[t.row][t.col] != -1){
+        return b->board[t.row][t.col];
     }
-    return true;
+    return -1;
 }
 
 void shoot(Board *b, Coordinate shot, int turn){
@@ -122,7 +97,7 @@ void shoot(Board *b, Coordinate shot, int turn){
     }
 
     b->shotsFierd = newShot(b->shotsFierd,shot);
-    if(isAWaterShot(b, shot)){
+    if(isAWaterShot(b, shot) == -1){
         printf("Is a water shot!!\n");
     }else{
         printf("Is NOT a water shot!!\n");
