@@ -12,26 +12,40 @@ int main (void){
 	Board* p2 = newBoard(10,10);
 
 	// randomPlaceShips(p1);
+	Ship s6;
+	s6.isAlive = true;
+    s6.length = TSHAPE_SIZE;
+    s6.type = TSHAPE;
+    s6.shotsRecived = 0;
+	s6.start.row = 7;
+	s6.start.col = 7;
+	s6.isHorizontal = true;
+	setShipPos(p1,s6);
+
+	printBoard(p1);
+
+
+	// randomPlaceShips(p1);
   	// printf("\n");
 	// printf("\t\t\tPLayer1\n");
 	// printf("\n");
   	// randomPlaceShips(p2);
 	// printBoard(p2);
-	Ship s;
-	s.isAlive = true;
-	s.length = CARRIER_SIZE;
-	s.type = CARRIER;
-	s.start.col = 0;
-	s.start.row = 1;
-	s.isHorizontal = false;
-	setShipPos(p1,s);
-	shot.col = 0;
-	shot.row = 5;
-	shoot(p1,shot,0);
+	// Ship s;
+	// s.isAlive = true;
+	// s.length = CARRIER_SIZE;
+	// s.type = CARRIER;
+	// s.start.col = 0;
+	// s.start.row = 1;
+	// s.isHorizontal = false;
+	// setShipPos(p1,s);
+	// shot.col = 0;
+	// shot.row = 5;
+	// shoot(p1,shot,0);
 	// shot.col = 1;
 	// shot.row = 5;
 	// shoot(p1,shot,0);
-	printBoard(p1);
+	// printBoard(p1);
   	// printf("\n");
 	// printf("\t\t\tPLayer2\n");
 	// printf("\n");

@@ -6,6 +6,7 @@
 #define CRUSIER_SIZE 3
 #define SUBMARINE_SIZE 3
 #define DESTROYER_SIZE 2
+#define TSHAPE_SIZE 3
 
 typedef struct _Coordinate{
     int row;
@@ -17,7 +18,8 @@ enum ShipType{
     BATTLESHIP, //1
     CRUISER,   //2
     SUBMARINE,  //3
-    DESTROYER  //4
+    DESTROYER,  //4
+    TSHAPE
 };
 
 typedef struct _Ship{

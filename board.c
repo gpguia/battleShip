@@ -46,6 +46,27 @@ bool isValidPos(Board* b, Ship ship){
         }
     }
 
+    if(ship.type == TSHAPE){
+        if(ship.start.col + (TSHAPE_SIZE - 1) >= b->colSize || ship.start.row + (TSHAPE_SIZE - 1) >= b->rowSize){
+            return false;
+        }
+
+        if(ship.isHorizontal){
+            for(int i=0;i < ship.length; i++){
+                if(b->board[ship.start.row][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize){
+                    return false;
+                }
+            }
+            int mid = ship.start.col + 1;
+            for(int i=0;i < ship.length;i++){
+                if(b->board[ship.start.row + i][mid] != -1 && (ship.start.row + i) < b->rowSize){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     for(int i = 0; i < ship.length; i++){
         if(ship.isHorizontal){
             if(b->board[ship.start.row][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize) // -1 is water
@@ -62,6 +83,18 @@ bool setShipPos(Board *b, Ship ship){
 
     if(!isValidPos(b,ship)){
         return false;
+    }
+
+    if(ship.type == TSHAPE){
+        if(ship.isHorizontal){
+            for(int i=0;i<ship.length;i++){
+                b->board[ship.start.row][ship.start.col + i] = ship.type;
+            }
+            int mid = ship.start.col + 1;
+            for(int i=0;i<ship.length;i++){
+                b->board[ship.start.row + i][mid] = ship.type;
+            }
+        }
     }
 
     if(ship.isHorizontal){ //horizontal
@@ -107,38 +140,48 @@ void shoot(Board *b, Coordinate shot, int turn){
 
 void printBoard(Board *b){
 	for(int i=0;i<b->rowSize;i++){
-		printf(KNRM "\t%d|",i);
+		if(i <= 9){
+            printf(KNRM "\t %d|",i);
+        }else{
+            printf(KNRM "\t%d|",i);
+        }
+
 		for(int j=0;j<b->colSize;j++){
             switch(b->board[i][j]){
                 case -1:
-                    printf(KBLU " ~ |"); 
+                    // printf(KBLU " ~ |"); 
+                    if(j <= 9){
+                        printf(KBLU "  ~  |"); 
+                    }else{
+                        printf(KBLU "  ~  |"); 
+                    }
                     break;
                 case 5:
-                    printf(KRED " ⊗ ");
+                    printf(KRED "  ⊗  ");
                     printf(KBLU "|");
                     break;
                 case 6:
-                    printf(KYEL " X ");
+                    printf(KYEL "  X  ");
                     printf(KBLU "|");
                     break;
                 case 0:
-                    printf(KCYN " C ");
+                    printf(KCYN "  C  ");
                     printf(KBLU "|");
                     break;
                 case 1:
-                    printf(KCYN " B ");
+                    printf(KCYN "  B  ");
                     printf(KBLU "|");
                     break;
                 case 2:
-                    printf(KCYN " R ");
+                    printf(KCYN "  R  ");
                     printf(KBLU "|");
                     break;
                 case 3:
-                    printf(KCYN " S ");
+                    printf(KCYN "  S  ");
                     printf(KBLU "|");
                     break;
                 case 4:
-                    printf(KCYN " D ");
+                    printf(KCYN "  D  ");
                     printf(KBLU "|");
                     break;
             }
@@ -148,11 +191,16 @@ void printBoard(Board *b){
 
 	printf("\t   ");
 	for(int k=0;k<b->colSize;k++){
-		printf(KNRM "%d | ",k);
+		if(k <=9){
+            printf(KNRM "  %d  |",k);
+        }else{
+            printf(KNRM "  %d |",k);
+        }
 	}
 	printf("\n\n");
     
     Shots* s;
+    printf(KMAG "Shots fired: ");
     for(s = b->shotsFierd; s != NULL; s = s->next){
         printf(KMAG "(%d,%d) ",s->target.col,s->target.row);
     }
@@ -161,7 +209,7 @@ void printBoard(Board *b){
 
 
 void randomPlaceShips(Board *b){
-    Ship s1,s2,s3,s4,s5,s;
+    Ship s1,s2,s3,s4,s5,s6;
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     srand((time_t)ts.tv_nsec);
@@ -237,6 +285,20 @@ void randomPlaceShips(Board *b){
         s5.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
         s5.isHorizontal = (rand() % 2);
         bool aux = setShipPos(b,s5);
+        if(aux == true){
+            isNotOnBoard = false;
+        }
+    }
+    isNotOnBoard = true;
+    s6.isAlive = true;
+    s6.length = TSHAPE_SIZE;
+    s6.type = TSHAPE;
+    s6.shotsRecived = 0;
+    while(isNotOnBoard){
+        s6.start.row = (rand() % (b->rowSize - TSHAPE_SIZE + 1));
+        s6.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
+        s6.isHorizontal = (rand() % 2);
+        bool aux = setShipPos(b, s6);
         if(aux == true){
             isNotOnBoard = false;
         }
