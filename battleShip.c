@@ -14,14 +14,16 @@ int main (void){
 	printf("Format of board sizes:X Y \n");
 	scanf("%d %d\n", &bheight,&blength);
 
-	if(bheight < 10 || bheight > 36 || blength < 10 || blength > 36){
+	while(bheight < 10 || bheight > 36 || blength < 10 || blength > 36){
 		printf("Incorrect sizes\n");
+		printf("Introduce new format:\n");
+		scanf("%d %d\n", &bheight,&blength);
 	}
     
-
+	else{
     Board* p1 = newBoard(bheight,blength);
 	Board* p2 = newBoard(bheight,blength);
-
+	}
 	// randomPlaceShips(p1);
 	Ship s6;
 	s6.isAlive = true;
