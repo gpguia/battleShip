@@ -7,9 +7,20 @@ int main (void){
 	int turn=1;
 	int coordX,coordY;
 	Coordinate shot;
+	int bheight,blength;
 
-    Board* p1 = newBoard(10,10);
-	Board* p2 = newBoard(10,10);
+
+	printf("Specify the board size! Minimum size:10x10 ; Maximum size:36x36 \n");
+	printf("Format of board sizes:X Y \n");
+	scanf("%d %d\n", &bheight,&blength);
+
+	if(bheight < 10 || bheight > 36 || blength < 10 || blength > 36){
+		printf("Incorrect sizes\n");
+	}
+    
+
+    Board* p1 = newBoard(bheight,blength);
+	Board* p2 = newBoard(bheight,blength);
 
 	// randomPlaceShips(p1);
 	Ship s6;

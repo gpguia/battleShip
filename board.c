@@ -64,6 +64,21 @@ bool isValidPos(Board* b, Ship ship){
                 }
             }
         }
+        
+        if(ship.isHorizontal == false){
+            for(int i=0;i < ship.length; i++){
+                if(b->board[ship.start.row + i][ship.start.col] != -1 && (ship.start.row + i) < b->rowSize){
+                    return false;
+                }
+            }
+            int mid = ship.start.row + 1;
+            for(int i=0;i < ship.length;i++){
+                if(b->board[mid][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize){
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
@@ -94,6 +109,15 @@ bool setShipPos(Board *b, Ship ship){
             for(int i=0;i<ship.length;i++){
                 b->board[ship.start.row + i][mid] = ship.type;
             }
+        }
+        else{
+            for(int i=0;i<ship.length;i++){
+                b->board[ship.start.row + i][ship.start.col] = ship.type;
+            }
+            int mid = ship.start.row + 1;
+            for(int i=0;i<ship.length;i++){
+                b->board[mid][ship.start.col + i] = ship.type;
+            }        	
         }
     }
 
@@ -156,10 +180,6 @@ void printBoard(Board *b){
                         printf(KBLU "  ~  |"); 
                     }
                     break;
-                case 5:
-                    printf(KRED "  ⊗  ");
-                    printf(KBLU "|");
-                    break;
                 case 6:
                     printf(KYEL "  X  ");
                     printf(KBLU "|");
@@ -182,6 +202,10 @@ void printBoard(Board *b){
                     break;
                 case 4:
                     printf(KCYN "  D  ");
+                    printf(KBLU "|");
+                    break;
+                case 5:
+                    printf(KCYN "  T  ");
                     printf(KBLU "|");
                     break;
             }
