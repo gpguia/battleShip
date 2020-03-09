@@ -95,7 +95,6 @@ bool isValidPos(Board* b, Ship ship){
 }
 
 bool setShipPos(Board *b, Ship ship){
-
     if(!isValidPos(b,ship)){
         return false;
     }
@@ -109,8 +108,7 @@ bool setShipPos(Board *b, Ship ship){
             for(int i=0;i<ship.length;i++){
                 b->board[ship.start.row + i][mid] = ship.type;
             }
-        }
-        else{
+        }else{
             for(int i=0;i<ship.length;i++){
                 b->board[ship.start.row + i][ship.start.col] = ship.type;
             }
@@ -119,6 +117,7 @@ bool setShipPos(Board *b, Ship ship){
                 b->board[mid][ship.start.col + i] = ship.type;
             }        	
         }
+        return true;
     }
 
     if(ship.isHorizontal){ //horizontal
@@ -252,7 +251,7 @@ void randomPlaceShips(Board *b){
             isNotOnBoard = false;
         }
     }
-
+    
     isNotOnBoard = true;
     s2.isAlive = true;
     s2.length = BATTLESHIP_SIZE;
@@ -313,6 +312,7 @@ void randomPlaceShips(Board *b){
             isNotOnBoard = false;
         }
     }
+
     isNotOnBoard = true;
     s6.isAlive = true;
     s6.length = TSHAPE_SIZE;

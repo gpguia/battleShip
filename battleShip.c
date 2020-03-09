@@ -7,33 +7,33 @@ int main (void){
 	int turn=1;
 	int coordX,coordY;
 	Coordinate shot;
-	int bheight,blength;
+	int bheight = 10,blength = 10;
 
 
 	printf("Specify the board size! Minimum size:10x10 ; Maximum size:36x36 \n");
 	printf("Format of board sizes:X Y \n");
-	scanf("%d %d\n", &bheight,&blength);
+	// scanf("%d %d", &bheight,&blength);
 
 	while(bheight < 10 || bheight > 36 || blength < 10 || blength > 36){
-		printf("Incorrect sizes\n");
+		// printf("\nGABIIIIIIII\n");
+		printf("Incorrect sizes (Minimum size:10x10 ; Maximum size:36x36)\n");
 		printf("Introduce new format:\n");
-		scanf("%d %d\n", &bheight,&blength);
+		scanf("%d %d", &bheight,&blength);
 	}
     
-	else{
     Board* p1 = newBoard(bheight,blength);
-	Board* p2 = newBoard(bheight,blength);
-	}
-	// randomPlaceShips(p1);
-	Ship s6;
-	s6.isAlive = true;
-    s6.length = TSHAPE_SIZE;
-    s6.type = TSHAPE;
-    s6.shotsRecived = 0;
-	s6.start.row = 7;
-	s6.start.col = 7;
-	s6.isHorizontal = true;
-	setShipPos(p1,s6);
+	// Board* p2 = newBoard(bheight,blength);
+
+	randomPlaceShips(p1);
+	// Ship s6;
+	// s6.isAlive = true;
+    // s6.length = TSHAPE_SIZE;
+    // s6.type = TSHAPE;
+    // s6.shotsRecived = 0;
+	// s6.start.row = 7;
+	// s6.start.col = 7;
+	// s6.isHorizontal = true;
+	// setShipPos(p1,s6);
 
 	printBoard(p1);
 
@@ -101,7 +101,7 @@ int main (void){
   	// }
   	
     clearBoard(p1);
-    clearBoard(p2);
+    // clearBoard(p2);
     return 0;
 }
 
