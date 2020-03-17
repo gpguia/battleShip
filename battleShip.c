@@ -7,24 +7,14 @@ int main (void){
 	int turn=1;
 	int coordX,coordY;
 	Coordinate shot;
-	int bheight = 10,blength = 10;
 
-
-	printf("Specify the board size! Minimum size:10x10 ; Maximum size:36x36 \n");
-	printf("Format of board sizes:X Y \n");
-	// scanf("%d %d", &bheight,&blength);
-
-	while(bheight < 10 || bheight > 36 || blength < 10 || blength > 36){
-		// printf("\nGABIIIIIIII\n");
-		printf("Incorrect sizes (Minimum size:10x10 ; Maximum size:36x36)\n");
-		printf("Introduce new format:\n");
-		scanf("%d %d", &bheight,&blength);
-	}
+	askForInputs();
+	
     
     Board* p1 = newBoard(bheight,blength);
 	// Board* p2 = newBoard(bheight,blength);
 
-	randomPlaceShips(p1);
+	// randomPlaceShips(p1);
 	// Ship s6;
 	// s6.isAlive = true;
     // s6.length = TSHAPE_SIZE;
@@ -35,7 +25,7 @@ int main (void){
 	// s6.isHorizontal = true;
 	// setShipPos(p1,s6);
 
-	printBoard(p1);
+	// printBoard(p1);
 
 
 	// randomPlaceShips(p1);
@@ -130,4 +120,35 @@ void printRules(){
 	printf("\n");
 	printf("\n");
 	printf("   Jogo termina quando após varias jogadas um dos jogadores conseguir derrubar todos os navios do adversário \n");
+}
+
+Board* askForInputs(){
+	int h,w;
+	Board* b;
+	int ok = -1;
+
+	printf("Specify the board size! Minimum size:10x10 ; Maximum size:36x36 \n");
+	printf("Format of board sizes:X Y \n");
+	scanf("%d%d",&h,&w);
+
+	while(h < 10 || h > 36 || w < 10 || w > 36){
+		printf("Incorrect sizes (Minimum size:10x10 ; Maximum size:36x36)\n");
+		printf("Introduce new format:\n");
+		scanf("%d%d",&h,&w);
+	}
+
+	b = newBoard(h,w);
+
+	printf(KNRM "Board size set to: " KGRN "(%d,%d)\n",h,w);
+	
+	while(ok != 1 && ok != 0){
+		printf("\n" KNRM "Randomly set ships ? (" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
+		scanf("%d",&ok);
+	}
+
+	if(ok == 1){
+		randomPlaceShips(b);
+	}
+
+
 }
