@@ -3,94 +3,22 @@
 int main (void){
 	// printRules();
 
-	int tmp=0;
-	int turn=1;
-	int coordX,coordY;
+	int col,row;
+	Board* p1board;
+	Board* p2board;
 	Coordinate shot;
 
-	askForInputs();
-	
-    
-    Board* p1 = newBoard(bheight,blength);
-	// Board* p2 = newBoard(bheight,blength);
+	p1board = askForInputs();
 
-	// randomPlaceShips(p1);
-	// Ship s6;
-	// s6.isAlive = true;
-    // s6.length = TSHAPE_SIZE;
-    // s6.type = TSHAPE;
-    // s6.shotsRecived = 0;
-	// s6.start.row = 7;
-	// s6.start.col = 7;
-	// s6.isHorizontal = true;
-	// setShipPos(p1,s6);
+	col = p1board->colSize;
+	row = p1board->rowSize;
+	p2board = newBoard(row,col);
 
-	// printBoard(p1);
+	randomPlaceShips(p2board);
 
+	shotsfired(p1board,p2board);
 
-	// randomPlaceShips(p1);
-  	// printf("\n");
-	// printf("\t\t\tPLayer1\n");
-	// printf("\n");
-  	// randomPlaceShips(p2);
-	// printBoard(p2);
-	// Ship s;
-	// s.isAlive = true;
-	// s.length = CARRIER_SIZE;
-	// s.type = CARRIER;
-	// s.start.col = 0;
-	// s.start.row = 1;
-	// s.isHorizontal = false;
-	// setShipPos(p1,s);
-	// shot.col = 0;
-	// shot.row = 5;
-	// shoot(p1,shot,0);
-	// shot.col = 1;
-	// shot.row = 5;
-	// shoot(p1,shot,0);
-	// printBoard(p1);
-  	// printf("\n");
-	// printf("\t\t\tPLayer2\n");
-	// printf("\n");
-  	// printBoard(p2);
-
-  	// while(tmp==0){
-  	// 	if(turn==1){
-  	// 		for(int i=0; i<3; i++){
-  	// 			scanf("%d %d",&coordX,&coordY);
-  	// 			shot.row=coordY;
-  	// 			shot.col=coordX;
-  	// 			shoot(p1,p2,shot);
-  	// 			printf("\n");
-	// 			printf("\t\t\tPLayer1\n");
-	// 			printf("\n");
-  	// 			printBoard(p1);
-  	// 			printf("\n");
-	// 			printf("\t\t\tPLayer2\n");
-	// 			printf("\n");  				
-  	// 			printBoard(p2);
-  	// 		}
-  	// 		turn=0;	
-  	// 	}
-  	// 	if(turn==0){
-  	// 		for(int i=0; i<3; i++){
-  	// 			scanf("%d %d",&coordX,&coordY);
-  	// 			shot.row=coordY;
-  	// 			shot.col=coordX;
-  	// 			shoot(p2,p1,shot);
-  	// 			printf("\n");
-	// 			printf("\t\t\tPLayer1\n");
-	// 			printf("\n");  				
-  	// 			printBoard(p1);
-  	// 			printf("\n");
-	// 			printf("\t\t\tPLayer2\n");
-	// 			printf("\n");  				
-  	// 			printBoard(p2);	
-  	// 		}	
-  	// 	}	
-  	// }
-  	
-    clearBoard(p1);
+    //clearBoard(p1);
     // clearBoard(p2);
     return 0;
 }
@@ -113,7 +41,7 @@ void printRules(){
 	printf("   		-AGUA - tiro nao acertou em nenhuma parte de nenhum navio. \n");
 	printf("   		-FOGO - tiro acertou numa parte pertencente a um dos navios. \n");
 	printf("   		-AFUNDOU - tiro acertou numa parte do navio , completando assim todas as partes do navio e adundando-o. \n");
-	printf("   *Após jogada jogador que realizou os tiros deve marcar nas coordenadas atiras com :\n ");
+	printf("   *Após jogada jogador que realizou os tiros deve marcar nas coordenadas atiradas com :\n ");
 	printf("        - uma bola (caso tenha acertado na agua) \n");
 	printf("        - um X (caso tenha acertado num dos navios) \n");
 	printf("   *Alterna-se a vez de jogar para o outro jogador. \n");
@@ -140,7 +68,7 @@ Board* askForInputs(){
 	b = newBoard(h,w);
 
 	printf(KNRM "Board size set to: " KGRN "(%d,%d)\n",h,w);
-	
+
 	while(ok != 1 && ok != 0){
 		printf("\n" KNRM "Randomly set ships ? (" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
 		scanf("%d",&ok);
@@ -150,5 +78,83 @@ Board* askForInputs(){
 		randomPlaceShips(b);
 	}
 
+	return b;
+}
 
+
+void shotsfired(Board* p1board, Board* p2board){
+	int tmp=0;
+	int turn=1;
+	Coordinate shot;
+	int r,c;
+	Shots* p;
+
+	globalprint(p1board,p2board);
+
+	while(tmp != 1){
+
+		if(turn == 1){
+			printf("PLAYER1 Introduce 3 shots coordinates (R C):\n");
+			for(int i=0;i<3;i++){
+				printf("Shot %d:" ,i+1);
+				scanf("%d %d",&r,&c);
+				shot.row=r;
+				shot.col=c;
+				p=searchShot(p2board->shotsFierd,shot);
+				while(r<0 || c<0 ||  r>p1board->rowSize || c >= p1board->colSize || p!=NULL ){
+					printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
+					printf("PLAYER1 Introduce 3 shots coordinates (R C):\n");
+					printf("Shot %d:" ,i+1);
+					scanf("%d %d",&r,&c);
+				}
+				shot.row=r;
+		  	shot.col=c;
+				shoot(p2board,shot,turn);
+				globalprint(p1board,p2board);
+				if(verifyendgame() == true){
+					printf("PLAYER1 WIN");
+					tmp=1;
+					return;
+				}
+			}
+			turn=2;
+		}
+
+		if(turn == 2){
+			printf("PLAYER2 Introduce 3 shots coordinates (R C):\n");
+			for(int j=0; j<3;j++){
+				printf("Shot %d:" ,j+1);
+				scanf("%d %d",&r,&c);
+				while(r<0 || c<0 ||  r>p1board->rowSize || c >= p1board->colSize){
+					printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
+					printf("PLAYER2 Introduce 3 shots coordinates (R C):\n");
+					printf("Shot %d:" ,j+1);
+					scanf("%d %d",&r,&c);
+				}
+				shot.row=r;
+		  	shot.col=c;
+				shoot(p1board,shot,turn);
+				globalprint(p1board,p2board);
+				if(verifyendgame() == true ){
+					printf("PLAYER2 WIN");
+					tmp=1;
+					return;
+				}
+			}
+			turn=1;
+		}
+
+	}
+
+}
+
+
+void globalprint(Board* p1board,Board* p2board){
+
+	printf("\t\t\t\t\tPlayer1 \n");
+	printf("\n");
+	printBoard(p1board,p2board);
+	printf("\t\t\t\t\tPlayer2 \n");
+	printf("\n");
+	printBoard(p2board,p1board);
 }

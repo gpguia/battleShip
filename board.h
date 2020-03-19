@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h> 
+#include <time.h>
 #include "ships.h"
 
 #define BOAT_SHOT 5
 #define WATER_SHOT 6
 #define MAX_NUM_SHIPS 5
+#define WIN 20
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -34,17 +35,18 @@ typedef struct _Board{
 
 Shots* newShot(Shots* lst, Coordinate s);
 void delAllShots(Shots *lst);
-void printShots(Shots* lst);
+//void printShots(Shots* lst);
 Shots* searchShot(Shots* lst, Coordinate k);
 
 Board* newBoard(int row, int col);
 void clearBoard(Board* b);
 
 void shoot(Board *b, Coordinate shot, int turn);
+bool verifyendgame();
 int isAWaterShot(Board* b, Coordinate t);
 
 void randomPlaceShips(Board *b);
 bool setShipPos(Board *b, Ship ship);
 bool isValidPos(Board* b, Ship ship);
 
-void printBoard(Board* b);
+void printBoard(Board* b, Board* a);

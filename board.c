@@ -1,5 +1,7 @@
 #include "board.h"
 
+int turn1=0;
+int turn2=0;
 
 Board* newBoard(int row, int col){
     Board *b = malloc(sizeof (Board));
@@ -64,7 +66,7 @@ bool isValidPos(Board* b, Ship ship){
                 }
             }
         }
-        
+
         if(ship.isHorizontal == false){
             for(int i=0;i < ship.length; i++){
                 if(b->board[ship.start.row + i][ship.start.col] != -1 && (ship.start.row + i) < b->rowSize){
@@ -115,7 +117,7 @@ bool setShipPos(Board *b, Ship ship){
             int mid = ship.start.row + 1;
             for(int i=0;i<ship.length;i++){
                 b->board[mid][ship.start.col + i] = ship.type;
-            }        	
+            }
         }
         return true;
     }
@@ -124,7 +126,7 @@ bool setShipPos(Board *b, Ship ship){
         for(int i=0;i<ship.length;i++){
             b->board[ship.start.row][ship.start.col + i] = ship.type;
         }
-        b->ships[b->curQtdShips] = ship;
+        b->ships[b->curQtdShips] = ship;https://github.com/gpguia/battleShip.git
         b->curQtdShips++;
     }else{//vertical
         for(int j=0;j<ship.length;j++){
@@ -144,24 +146,33 @@ int isAWaterShot(Board* b, Coordinate t){
 }
 
 void shoot(Board *b, Coordinate shot, int turn){
-	if(shot.row < 0 || shot.col < 0){
+	/*if(shot.row < 0 || shot.col < 0){
         printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
         return;
     }else if(shot.row >= b->rowSize || shot.col >= b->colSize){
         printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
         return;
     }
+  */
 
     b->shotsFierd = newShot(b->shotsFierd,shot);
     if(isAWaterShot(b, shot) == -1){
         printf("Is a water shot!!\n");
     }else{
         printf("Is NOT a water shot!!\n");
+        b->board[shot.row][shot.col]=6;
     }
 
 }
 
-void printBoard(Board *b){
+bool verifyendgame(){
+	if(turn1 == WIN || turn2 == WIN)
+		return true;
+	else
+		return false;
+}
+
+void printBoard(Board *b , Board *adv){
 	for(int i=0;i<b->rowSize;i++){
 		if(i <= 9){
             printf(KNRM "\t %d|",i);
@@ -172,11 +183,11 @@ void printBoard(Board *b){
 		for(int j=0;j<b->colSize;j++){
             switch(b->board[i][j]){
                 case -1:
-                    // printf(KBLU " ~ |"); 
+                    // printf(KBLU " ~ |");
                     if(j <= 9){
-                        printf(KBLU "  ~  |"); 
+                        printf(KBLU "  ~  |");
                     }else{
-                        printf(KBLU "  ~  |"); 
+                        printf(KBLU "  ~  |");
                     }
                     break;
                 case 6:
@@ -221,11 +232,11 @@ void printBoard(Board *b){
         }
 	}
 	printf("\n\n");
-    
+
     Shots* s;
     printf(KMAG "Shots fired: ");
-    for(s = b->shotsFierd; s != NULL; s = s->next){
-        printf(KMAG "(%d,%d) ",s->target.col,s->target.row);
+    for(s = adv->shotsFierd; s != NULL; s = s->next){
+        printf(KMAG "(%d,%d) ",s->target.row,s->target.col);
     }
     printf(KNRM "\n");
 }
@@ -251,7 +262,7 @@ void randomPlaceShips(Board *b){
             isNotOnBoard = false;
         }
     }
-    
+
     isNotOnBoard = true;
     s2.isAlive = true;
     s2.length = BATTLESHIP_SIZE;
@@ -280,7 +291,7 @@ void randomPlaceShips(Board *b){
         if(aux == true){
             isNotOnBoard = false;
         }
-            
+
     }
 
     isNotOnBoard = true;
@@ -335,6 +346,7 @@ Shots* newShot(Shots* lst, Coordinate s){
         node->next = lst;
         node->target.row = s.row;
         node->target.col = s.col;
+        //node->isHit=isHit;
     }
     return node;
 }
@@ -358,10 +370,11 @@ void delAllShots(Shots *lst){
     }
 }
 
-void printShots(Shots* lst){
+/*void printShots(Shots* lst){
     Shots* aux = lst;
     while(aux != NULL){
         printf(KMAG "\n(%d,%d)\n" KNRM, aux->target.row,aux->target.col);
         aux = aux->next;
     }
 }
+*/
