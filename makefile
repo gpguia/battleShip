@@ -1,4 +1,4 @@
-OBJS=battleShip.o board.o
+OBJS=battleShip.o board.o ships.o
 CC=gcc
 PROGRAM=./battleShip
 CFLAGS=-std=c99 -D_POSIX_C_SOURCE=199309L

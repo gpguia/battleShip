@@ -4,10 +4,8 @@
 #include <time.h>
 #include "ships.h"
 
-#define BOAT_SHOT 5
-#define WATER_SHOT 6
-#define MAX_NUM_SHIPS 5
-#define WIN 20
+#define WIN 2
+
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -18,25 +16,13 @@
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
 
-struct _Shots{
-    Coordinate target;
-    struct _Shots* next;
-};
-typedef struct _Shots Shots;
-
 typedef struct _Board{
     int **board;
     int rowSize;
     int colSize;
-    Ship ships[MAX_NUM_SHIPS];
-    int curQtdShips;
+    Ships* lstOfShips;
     Shots* shotsFierd;
 } Board;
-
-Shots* newShot(Shots* lst, Coordinate s);
-void delAllShots(Shots *lst);
-//void printShots(Shots* lst);
-Shots* searchShot(Shots* lst, Coordinate k);
 
 Board* newBoard(int row, int col);
 void clearBoard(Board* b);

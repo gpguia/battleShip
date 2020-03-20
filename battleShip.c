@@ -16,10 +16,10 @@ int main (void){
 
 	randomPlaceShips(p2board);
 
-	shotsfired(p1board,p2board);
+	fire(p1board,p2board);
 
-    //clearBoard(p1);
-    // clearBoard(p2);
+    clearBoard(p1board);
+    clearBoard(p2board);
     return 0;
 }
 
@@ -55,12 +55,12 @@ Board* askForInputs(){
 	Board* b;
 	int ok = -1;
 
-	printf("Specify the board size! Minimum size:10x10 ; Maximum size:36x36 \n");
+	printf("Specify the board size! Minimum size:20x20 ; Maximum size:40x40 \n");
 	printf("Format of board sizes:X Y \n");
 	scanf("%d%d",&h,&w);
 
-	while(h < 10 || h > 36 || w < 10 || w > 36){
-		printf("Incorrect sizes (Minimum size:10x10 ; Maximum size:36x36)\n");
+	while(h < 20 || h > 40 || w < 20 || w > 40){
+		printf("Incorrect sizes (Minimum size:20x20 ; Maximum size:40x40)\n");
 		printf("Introduce new format:\n");
 		scanf("%d%d",&h,&w);
 	}
@@ -82,7 +82,7 @@ Board* askForInputs(){
 }
 
 
-void shotsfired(Board* p1board, Board* p2board){
+void fire(Board* p1board, Board* p2board){
 	int tmp=0;
 	int turn=1;
 	Coordinate shot;

@@ -18,18 +18,17 @@ Board* newBoard(int row, int col){
             b->board[i][j] = -1;
         }
     }
-    b->curQtdShips = 0;
     b->shotsFierd = NULL;
+    b->lstOfShips = NULL;
     return b;
 }
-
-
-
 
 void clearBoard(Board* b){
     for(int i=0; i<b->rowSize; i++){
         free(b->board[i]);
     }
+    clearShips(b->lstOfShips);
+    clearShots(b->shotsFierd);
     free(b);
 }
 
@@ -126,14 +125,12 @@ bool setShipPos(Board *b, Ship ship){
         for(int i=0;i<ship.length;i++){
             b->board[ship.start.row][ship.start.col + i] = ship.type;
         }
-        b->ships[b->curQtdShips] = ship;https://github.com/gpguia/battleShip.git
-        b->curQtdShips++;
+        b->lstOfShips = newShip(b->lstOfShips, ship);
     }else{//vertical
         for(int j=0;j<ship.length;j++){
             b->board[ship.start.row + j][ship.start.col] = ship.type;
         }
-        b->ships[b->curQtdShips] = ship;
-        b->curQtdShips++;
+        b->lstOfShips = newShip(b->lstOfShips, ship);
     }
     return true;
 }
@@ -146,23 +143,33 @@ int isAWaterShot(Board* b, Coordinate t){
 }
 
 void shoot(Board *b, Coordinate shot, int turn){
-	/*if(shot.row < 0 || shot.col < 0){
-        printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
-        return;
-    }else if(shot.row >= b->rowSize || shot.col >= b->colSize){
-        printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
-        return;
-    }
-  */
-
-    b->shotsFierd = newShot(b->shotsFierd,shot);
+    Ships* s;
     if(isAWaterShot(b, shot) == -1){
         printf("Is a water shot!!\n");
+        b->shotsFierd = newShot(b->shotsFierd,shot,false);
     }else{
         printf("Is NOT a water shot!!\n");
-        b->board[shot.row][shot.col]=6;
+        b->board[shot.row][shot.col]=GOODSHOT;
+        b->shotsFierd = newShot(b->shotsFierd,shot,true);
+        s = searchLivingShips(b->lstOfShips, b->board[shot.row][shot.col]);
+        if(s != NULL){
+            if(s->ship.type == TSHAPE){
+                if(s->ship.shotsRecived == s->ship.length + 2){
+                    s->ship.isAlive = false;
+                    s->ship.shotsRecived++;
+                }else{
+                    s->ship.shotsRecived++;
+                }
+            }else{
+                if(s->ship.shotsRecived == s->ship.length + 1){
+                    s->ship.isAlive = false;
+                    s->ship.shotsRecived++;
+                }else{
+                    s->ship.shotsRecived++;
+                }
+            }
+        }
     }
-
 }
 
 bool verifyendgame(){
@@ -183,38 +190,37 @@ void printBoard(Board *b , Board *adv){
 		for(int j=0;j<b->colSize;j++){
             switch(b->board[i][j]){
                 case -1:
-                    // printf(KBLU " ~ |");
                     if(j <= 9){
                         printf(KBLU "  ~  |");
                     }else{
                         printf(KBLU "  ~  |");
                     }
                     break;
-                case 6:
+                case GOODSHOT:
                     printf(KYEL "  X  ");
                     printf(KBLU "|");
                     break;
-                case 0:
+                case CARRIER:
                     printf(KCYN "  C  ");
                     printf(KBLU "|");
                     break;
-                case 1:
+                case BATTLESHIP:
                     printf(KCYN "  B  ");
                     printf(KBLU "|");
                     break;
-                case 2:
+                case CRUISER:
                     printf(KCYN "  R  ");
                     printf(KBLU "|");
                     break;
-                case 3:
+                case SUBMARINE:
                     printf(KCYN "  S  ");
                     printf(KBLU "|");
                     break;
-                case 4:
+                case DESTROYER:
                     printf(KCYN "  D  ");
                     printf(KBLU "|");
                     break;
-                case 5:
+                case TSHAPE:
                     printf(KCYN "  T  ");
                     printf(KBLU "|");
                     break;
@@ -236,7 +242,11 @@ void printBoard(Board *b , Board *adv){
     Shots* s;
     printf(KMAG "Shots fired: ");
     for(s = adv->shotsFierd; s != NULL; s = s->next){
-        printf(KMAG "(%d,%d) ",s->target.row,s->target.col);
+        if(s->isHit){
+            printf(KGRN "(%d,%d) ",s->target.row,s->target.col);
+        }else{
+            printf(KRED "(%d,%d) ",s->target.row,s->target.col);
+        }
     }
     printf(KNRM "\n");
 }
@@ -339,42 +349,3 @@ void randomPlaceShips(Board *b){
         }
     }
 }
-
-Shots* newShot(Shots* lst, Coordinate s){
-    Shots* node = (Shots*)malloc(sizeof(Shots));
-    if(node != NULL){
-        node->next = lst;
-        node->target.row = s.row;
-        node->target.col = s.col;
-        //node->isHit=isHit;
-    }
-    return node;
-}
-
-Shots* searchShot(Shots* lst, Coordinate k){
-    Shots* p;
-    for(p=lst; p!=NULL; p = p->next){
-        if(p->target.row == k.row && p->target.col == k.col){
-            return p;
-        }
-    }
-    return NULL;
-}
-
-void delAllShots(Shots *lst){
-    Shots* s = lst, *aux;
-    while(s != NULL){
-        aux = s->next;
-        free(s);
-        s = aux;
-    }
-}
-
-/*void printShots(Shots* lst){
-    Shots* aux = lst;
-    while(aux != NULL){
-        printf(KMAG "\n(%d,%d)\n" KNRM, aux->target.row,aux->target.col);
-        aux = aux->next;
-    }
-}
-*/
