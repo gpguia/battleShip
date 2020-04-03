@@ -1,38 +1,46 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include "ships.h"
+#include "utils.h"
 
-#define WIN 2
+#define MAXNUMSHIPS 16
+typedef struct _Coordinate{
+    int row;
+    int col;
+}Coordinate;
 
+enum ShipType{
+    CARRIER,  //0
+    BATTLESHIP, //1
+    CRUISER,   //2
+    SUBMARINE,  //3
+    DESTROYER,  //4
+    TSHAPE,  //5
+    GOODSHOT //if this boat has been hit.
+};
 
-#define KNRM  "\x1B[0m"
-#define KRED  "\x1B[31m"
-#define KGRN  "\x1B[32m"
-#define KYEL  "\x1B[33m"
-#define KBLU  "\x1B[34m"
-#define KMAG  "\x1B[35m"
-#define KCYN  "\x1B[36m"
-#define KWHT  "\x1B[37m"
+typedef struct _Shots{
+    Coordinate target;
+    bool isHit;
+    struct _Shots* next;
+} Shots;
+
+typedef struct _PiceBoard{
+    bool hasShip;
+    bool wasHit;
+    int shipType;
+} PiceBoard;
 
 typedef struct _Board{
-    int **board;
+    PiceBoard **board;
     int rowSize;
     int colSize;
-    Ships* lstOfShips;
     Shots* shotsFierd;
 } Board;
 
-Board* newBoard(int row, int col);
+void newBoard(int row, int col, Board* p1, Board* p2);
 void clearBoard(Board* b);
 
-void shoot(Board *b, Coordinate shot, int turn);
-bool verifyendgame();
-int isAWaterShot(Board* b, Coordinate t);
+void printBoard(Board *b);
+void printAllShipsTypes();
 
-void randomPlaceShips(Board *b);
-bool setShipPos(Board *b, Ship ship);
-bool isValidPos(Board* b, Ship ship);
-
-void printBoard(Board* b, Board* a);
+int* selectChips(int row, int col);
+bool isValidPos(Board*b, int type, Coordinate start);
+void setShips(Board* b, int* lst);
