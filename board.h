@@ -1,6 +1,17 @@
 #include "utils.h"
 
 #define MAXNUMSHIPS 16
+#define CARRIER_SIZE 5
+#define TSHAPE_SIZE 3 //+2 for the front part
+#define BATTLESHIP_SIZE 4
+#define CRUSIER_SIZE 3
+#define SUBMARINE_SIZE 3
+#define DESTROYER_SIZE 2
+#define ROTATION_0 0
+#define ROTATION_90 90
+#define ROTATION_180 180
+#define ROTATION_270 270
+
 typedef struct _Coordinate{
     int row;
     int col;
@@ -22,25 +33,35 @@ typedef struct _Shots{
     struct _Shots* next;
 } Shots;
 
-typedef struct _PiceBoard{
+typedef struct _Cell{
     bool hasShip;
     bool wasHit;
     int shipType;
-} PiceBoard;
+} Cell;
+
+typedef struct _Ship{
+    int type;
+    int length;
+    Coordinate start;
+    int rotation;
+} Ship;
 
 typedef struct _Board{
-    PiceBoard **board;
+    Cell **board;
     int rowSize;
     int colSize;
     Shots* shotsFierd;
+    int hp;
 } Board;
 
 void newBoard(int row, int col, Board* p1, Board* p2);
 void clearBoard(Board* b);
+void setHP(Board* p1, Board* p2, int* lstOfShips);
 
 void printBoard(Board *b);
 void printAllShipsTypes();
 
 int* selectChips(int row, int col);
-bool isValidPos(Board*b, int type, Coordinate start);
+bool isValidPos(Board* b, Ship ship);
 void setShips(Board* b, int* lst);
+void randomPlaceShips(Board *b, int* lstOfShips);
