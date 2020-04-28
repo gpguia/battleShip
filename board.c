@@ -157,7 +157,7 @@ void printAllShipsTypes(){
     printf("\t " KCYN "C\t      \t\t     \t\t    \t\t     \t\t     \n");
 }
 
-int* selectChips(int row, int col){
+int* selectShips(int row, int col){
     clearScreen();
 
     int maxNumberOfShips = (row * col)/ 25;
@@ -200,69 +200,100 @@ int* selectChips(int row, int col){
 }
 
 bool isValidPos(Board* b, Ship ship){
-    if(ship.start.col < 0 || ship.start.row < 0){
+    if(ship.start.col < 0 || ship.start.row < 0 || ship.start.row >= b->rowSize || ship.start.col >= b->colSize){
         return false;
     }
 
-    if(ship.rotation == ROTATION_0 || ship.rotation == ROTATION_180){
-        if(ship.length + ship.start.col > b->colSize){
-            return false;
-        }
-    }else{
-        if(ship.length + ship.start.row > b->rowSize){
-            return false;
-        }
-    }
-
     if(ship.type == TSHAPE){
-        if(ship.start.col + (TSHAPE_SIZE - 1) >= b->colSize || ship.start.row + (TSHAPE_SIZE - 1) >= b->rowSize){
+        //TODO TSHAPE
+        // if(ship.rotation == ROTATION_0 || ship.rotation == ROTATION_180 || ship.rotation == ROTATION_360){
+    //     if(ship.length + ship.start.col > b->colSize){
+    //         return false;
+    //     }
+    // }else{
+    //     if(ship.length + ship.start.row > b->rowSize){
+    //         return false;
+    //     }
+    // }
+
+    // if(ship.type == TSHAPE){
+    //     if(ship.start.col + (TSHAPE_SIZE - 1) >= b->colSize || ship.start.row + (TSHAPE_SIZE - 1) >= b->rowSize){
+    //         return false;
+    //     }
+
+    //     if(ship.rotation == ROTATION_0 || ship.rotation == ROTATION_180){
+    //         for(int i=0;i < ship.length; i++){
+    //             if(b->board[ship.start.row][ship.start.col + i].hasShip != -1 && (ship.start.col + i) < b->colSize){
+    //                 return false;
+    //             }
+    //         }
+    //         int mid = ship.start.col + 1;
+    //         for(int i=0;i < ship.length;i++){
+    //             if(b->board[ship.start.row + i][mid].shipType != -1 && (ship.start.row + i) < b->rowSize){
+    //                 return false;
+    //             }
+    //         }
+    //     }
+
+    //     if(ship.rotation == ROTATION_270 || ship.rotation == ROTATION_90){
+    //         for(int i=0;i < ship.length; i++){
+    //             if(b->board[ship.start.row + i][ship.start.col].shipType != -1 && (ship.start.row + i) < b->rowSize){
+    //                 return false;
+    //             }
+    //         }
+    //         int mid = ship.start.row + 1;
+    //         for(int i=0;i < ship.length;i++){
+    //             if(b->board[mid][ship.start.col + i].shipType != -1 && (ship.start.col + i) < b->colSize){
+    //                 return false;
+    //             }
+    //         }
+    //     }
+
+    //     return true;
+    // }
+    }
+
+    switch (ship.rotation){
+    case ROTATION_0:
+        if(ship.start.col + ship.length > b->colSize)
             return false;
-        }
-
-        if(ship.rotation == ROTATION_0 || ship.rotation == ROTATION_180){
-            for(int i=0;i < ship.length; i++){
-                if(b->board[ship.start.row][ship.start.col + i].hasShip != -1 && (ship.start.col + i) < b->colSize){
-                    return false;
-                }
-            }
-            int mid = ship.start.col + 1;
-            for(int i=0;i < ship.length;i++){
-                if(b->board[ship.start.row + i][mid].shipType != -1 && (ship.start.row + i) < b->rowSize){
-                    return false;
-                }
-            }
-        }
-
-        if(ship.rotation == ROTATION_270 || ship.rotation == ROTATION_90){
-            for(int i=0;i < ship.length; i++){
-                if(b->board[ship.start.row + i][ship.start.col].shipType != -1 && (ship.start.row + i) < b->rowSize){
-                    return false;
-                }
-            }
-            int mid = ship.start.row + 1;
-            for(int i=0;i < ship.length;i++){
-                if(b->board[mid][ship.start.col + i].shipType != -1 && (ship.start.col + i) < b->colSize){
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    for(int i = 0; i < ship.length; i++){
-        if(ship.rotation == ROTATION_0 || ship.rotation == ROTATION_180){
-            if(b->board[ship.start.row][ship.start.col + i].shipType != -1 && (ship.start.col + i) < b->colSize) // -1 is water
-                return false;
-        }else{//vertical
-            if(b->board[ship.start.row + i][ship.start.col].shipType != -1 && (ship.start.row + i) < b->rowSize) // -1 is water
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row][ship.start.col + i].shipType != -1)
                 return false;
         }
+        break;
+    case ROTATION_180:
+        if(ship.start.col - ship.length < -1)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row][ship.start.col - i].shipType != -1)
+                return false;
+        }
+        break;
+    case ROTATION_90:
+        if(ship.start.row - ship.length < -1)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row - i][ship.start.col].shipType != -1)
+                return false;
+        }
+        break;
+    case ROTATION_270:
+        if(ship.start.row + ship.length > b->rowSize)
+            return false;
+
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row + i][ship.start.col].shipType != -1){
+                return false;
+            }
+        }
+        break;
     }
+
     return true;
 }
 
-bool setShipPos(Board *b, Ship ship){
+bool setShip(Board *b, Ship ship){
     if(!isValidPos(b,ship)){
         return false;
     }
@@ -271,14 +302,139 @@ bool setShipPos(Board *b, Ship ship){
         //TODO check rotation...
     }
 
-    if(ship.rotation == ROTATION_0 || ROTATION_180){ //horizontal
+
+    switch (ship.rotation)
+    {
+    case ROTATION_0:
         for(int i=0;i<ship.length;i++){
             b->board[ship.start.row][ship.start.col + i].shipType = ship.type;
         }
-    }else{//vertical
+        break;
+    case ROTATION_270:
         for(int j=0;j<ship.length;j++){
             b->board[ship.start.row + j][ship.start.col].shipType = ship.type;
         }
+        break;
+    case ROTATION_180:
+        for(int i=0;i<ship.length;i++){
+            b->board[ship.start.row][ship.start.col - i].shipType = ship.type;
+        }
+        break;
+    case ROTATION_90:
+        for(int j=0;j<ship.length;j++){
+            b->board[ship.start.row - j][ship.start.col].shipType = ship.type;
+        }
+        break;
     }
     return true;
+}
+
+void randomPlaceShips(Board *b, int* lstOfShips){
+    Ship s;
+    Coordinate c;
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    srand((time_t)ts.tv_nsec);
+    bool isNotOnBoard = true;
+
+
+    for(int i=0;i<6;i++){
+        switch (i)
+        {
+        case CARRIER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = CARRIER_SIZE;
+                s.type = CARRIER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - CARRIER_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - CARRIER_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case BATTLESHIP:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = BATTLESHIP_SIZE;
+                s.type = BATTLESHIP;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - BATTLESHIP_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - BATTLESHIP_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case CRUISER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = CRUSIER_SIZE;
+                s.type = CRUISER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - CRUSIER_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - CRUSIER_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case SUBMARINE:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = SUBMARINE_SIZE;
+                s.type = SUBMARINE;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - SUBMARINE_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - SUBMARINE_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case DESTROYER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = DESTROYER_SIZE;
+                s.type = DESTROYER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - DESTROYER_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case TSHAPE:
+            // for(i=0;i<lstOfShips[i];i++){
+            //     s.length = DESTROYER_SIZE;
+            //     s.type = DESTROYER;
+            //     while(isNotOnBoard){
+            //         s.rotation = (rand() % 4);
+            //         s.start.row = (rand() % (b->rowSize - TSHAPE_SIZE + 1));
+            //         s.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
+            //         if(setShip(b,s)){
+            //             isNotOnBoard = false;
+            //         }
+            //     }
+            // }
+            // isNotOnBoard = true;
+            break;
+        }
+    }
+}
+
+void manualyPlanceShips(Board* b, int* lstOfShips){
+    //TODO
 }

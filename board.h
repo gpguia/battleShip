@@ -8,9 +8,9 @@
 #define SUBMARINE_SIZE 3
 #define DESTROYER_SIZE 2
 #define ROTATION_0 0
-#define ROTATION_90 90
-#define ROTATION_180 180
-#define ROTATION_270 270
+#define ROTATION_90 1
+#define ROTATION_180 2
+#define ROTATION_270 3
 
 typedef struct _Coordinate{
     int row;
@@ -24,7 +24,7 @@ enum ShipType{
     SUBMARINE,  //3
     DESTROYER,  //4
     TSHAPE,  //5
-    GOODSHOT //if this boat has been hit.
+    GOODSHOT //hit the target
 };
 
 typedef struct _Shots{
@@ -61,7 +61,8 @@ void setHP(Board* p1, Board* p2, int* lstOfShips);
 void printBoard(Board *b);
 void printAllShipsTypes();
 
-int* selectChips(int row, int col);
+int* selectShips(int row, int col);
 bool isValidPos(Board* b, Ship ship);
-void setShips(Board* b, int* lst);
+bool setShip(Board *b, Ship ship);
 void randomPlaceShips(Board *b, int* lstOfShips);
+void manualyPlanceShips(Board* b, int* lstOfShips);

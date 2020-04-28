@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
         newBoard(row, col, p1, p2);
     }
     
-    lstOfShips = selectChips(p1->rowSize,p1->colSize);
+    lstOfShips = selectShips(p1->rowSize,p1->colSize);
     setHP(p1,p2,lstOfShips);
 
     printWarningMsg("Player 1: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
@@ -29,9 +29,9 @@ int main(int argc, char *argv[]){
 	}
 
 	if(random == 1){
-		//randomPlaceShips(p1);
+		randomPlaceShips(p1,lstOfShips);
 	}else{
-        // setManualyShips();
+        manualyPlanceShips(p1,lstOfShips);
     }
 
     printWarningMsg("Player 2: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
@@ -42,9 +42,9 @@ int main(int argc, char *argv[]){
 	}
 
     if(random == 1){
-		//randomPlaceShips(p2);
+		randomPlaceShips(p2,lstOfShips);
 	}else{
-        // setManualyShips();
+        manualyPlanceShips(p2,lstOfShips);
     }
 
 
