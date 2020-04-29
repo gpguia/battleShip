@@ -66,3 +66,4 @@ bool isValidPos(Board* b, Ship ship);
 bool setShip(Board *b, Ship ship);
 void randomPlaceShips(Board *b, int* lstOfShips);
 void manualyPlanceShips(Board* b, int* lstOfShips);
+int convertRotation(int rot);
