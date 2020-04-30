@@ -318,37 +318,45 @@ bool setShip(Board *b, Ship ship){
         case ROTATION_0:
             for(int i=0;i<ship.length;i++){
                 b->board[ship.start.row][ship.start.col + i].shipType = ship.type;
+                b->board[ship.start.row][ship.start.col + i].hasShip = true;
             }
             mid = ship.start.col + 1;
             for(int i=0;i<ship.length;i++){
                 b->board[ship.start.row + i][mid].shipType = ship.type;
+                b->board[ship.start.row + i][mid].hasShip = true;
             }
             break;
         case ROTATION_90:
             for(int i=0;i<ship.length;i++){
                 b->board[ship.start.row - i][ship.start.col].shipType = ship.type;
+                b->board[ship.start.row - i][ship.start.col].hasShip = true;
             }
             mid = ship.start.row - 1;
             for(int i=0;i<ship.length;i++){
                 b->board[mid][ship.start.col - i].shipType = ship.type;
+                b->board[mid][ship.start.col - i].hasShip = true;
             }
             break;
         case ROTATION_180:
             for(int i=0;i < ship.length;i++){
                 b->board[ship.start.row][ship.start.col - i].shipType = ship.type;
+                b->board[ship.start.row][ship.start.col - i].hasShip = true;
             }
             mid = ship.start.col - 1;
             for(int i=0;i < ship.length; i++){
                 b->board[ship.start.row - i][mid].shipType = ship.type;
+                b->board[ship.start.row - i][mid].hasShip = true;
             }
             break;
         case ROTATION_270:
             for(int i=0;i<ship.length;i++){
                 b->board[ship.start.row + i][ship.start.col].shipType = ship.type;
+                b->board[ship.start.row + i][ship.start.col].hasShip = true;
             }
             mid = ship.start.row + 1;
             for(int i=0;i<ship.length;i++){
                 b->board[mid][ship.start.col + i].shipType = ship.type;
+                b->board[mid][ship.start.col + i].hasShip = true;
             }
             break;
         }
@@ -361,21 +369,25 @@ bool setShip(Board *b, Ship ship){
     case ROTATION_0:
         for(int i=0;i<ship.length;i++){
             b->board[ship.start.row][ship.start.col + i].shipType = ship.type;
+            b->board[ship.start.row][ship.start.col + i].hasShip = true;
         }
         break;
     case ROTATION_270:
         for(int j=0;j<ship.length;j++){
             b->board[ship.start.row + j][ship.start.col].shipType = ship.type;
+            b->board[ship.start.row + j][ship.start.col].hasShip = true;
         }
         break;
     case ROTATION_180:
         for(int i=0;i<ship.length;i++){
             b->board[ship.start.row][ship.start.col - i].shipType = ship.type;
+            b->board[ship.start.row][ship.start.col - i].hasShip = true;
         }
         break;
     case ROTATION_90:
         for(int j=0;j<ship.length;j++){
             b->board[ship.start.row - j][ship.start.col].shipType = ship.type;
+            b->board[ship.start.row - j][ship.start.col].hasShip = true;
         }
         break;
     }
