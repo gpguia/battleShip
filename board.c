@@ -1,194 +1,88 @@
 #include "board.h"
 
-int turn1=0;
-int turn2=0;
 
-Board* newBoard(int row, int col){
-    Board *b = malloc(sizeof (Board));
+void newBoard(int row, int col, Board* p1, Board* p2){
+    int ok = -1;
 
-    b->rowSize = row;
-    b->colSize = col;
-    b->board = (int **)malloc(row * sizeof(int*));
+	while(row < 20 || col > 40 || row < 20 || col > 40){
+		printWarningMsg("Incorrect sizes (Minimum size:20x20 ; Maximum size:40x40)");
+		printSuccessMsg("Introduce new format:");
+		scanf("%d%d",&row,&col);
+	}
+
+
+
+    p1->rowSize = row;
+    p1->colSize = col;
+    p1->board = (Cell **)malloc(row * sizeof(Cell*));
+    p1->hp = 0;
+
+    p2->rowSize = row;
+    p2->colSize = col;
+    p2->board = (Cell **)malloc(row * sizeof(Cell*));
+    p2->hp = 0;
 
     for(int i = 0; i < row; i++) {
-        b->board[i] = (int *)malloc(col * sizeof(int));
+        p1->board[i] = (Cell *)malloc(col * sizeof(Cell));
+        p2->board[i] = (Cell *)malloc(col * sizeof(Cell));
     }
     for(int i=0; i<row; i++){
         for(int j=0;j<col; j++){
-            b->board[i][j] = -1;
+            p1->board[i][j].hasShip = false;
+            p1->board[i][j].wasHit = false;
+            p1->board[i][j].shipType = -1;
+
+            p2->board[i][j].hasShip = false;
+            p2->board[i][j].wasHit = false;
+            p2->board[i][j].shipType = -1;
         }
     }
-    b->shotsFierd = NULL;
-    b->lstOfShips = NULL;
-    return b;
+    p1->shotsFierd = NULL;
+    p2->shotsFierd = NULL;
 }
 
-void clearBoard(Board* b){
-    for(int i=0; i<b->rowSize; i++){
-        free(b->board[i]);
-    }
-    clearShips(b->lstOfShips);
-    clearShots(b->shotsFierd);
-    free(b);
-}
-
-bool isValidPos(Board* b, Ship ship){
-    if(ship.start.col < 0 || ship.start.row < 0){
-        return false;
-    }
-
-    if(ship.isHorizontal){
-        if(ship.length + ship.start.col > b->colSize){
-            return false;
-        }
-    }else{
-        if(ship.length + ship.start.row > b->rowSize){
-            return false;
-        }
-    }
-
-    if(ship.type == TSHAPE){
-        if(ship.start.col + (TSHAPE_SIZE - 1) >= b->colSize || ship.start.row + (TSHAPE_SIZE - 1) >= b->rowSize){
-            return false;
-        }
-
-        if(ship.isHorizontal){
-            for(int i=0;i < ship.length; i++){
-                if(b->board[ship.start.row][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize){
-                    return false;
-                }
-            }
-            int mid = ship.start.col + 1;
-            for(int i=0;i < ship.length;i++){
-                if(b->board[ship.start.row + i][mid] != -1 && (ship.start.row + i) < b->rowSize){
-                    return false;
-                }
-            }
-        }
-
-        if(ship.isHorizontal == false){
-            for(int i=0;i < ship.length; i++){
-                if(b->board[ship.start.row + i][ship.start.col] != -1 && (ship.start.row + i) < b->rowSize){
-                    return false;
-                }
-            }
-            int mid = ship.start.row + 1;
-            for(int i=0;i < ship.length;i++){
-                if(b->board[mid][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize){
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    for(int i = 0; i < ship.length; i++){
-        if(ship.isHorizontal){
-            if(b->board[ship.start.row][ship.start.col + i] != -1 && (ship.start.col + i) < b->colSize) // -1 is water
-                return false;
-        }else{//vertical
-            if(b->board[ship.start.row + i][ship.start.col] != -1 && (ship.start.row + i) < b->rowSize) // -1 is water
-                return false;
-        }
-    }
-    return true;
-}
-
-bool setShipPos(Board *b, Ship ship){
-    if(!isValidPos(b,ship)){
-        return false;
-    }
-
-    if(ship.type == TSHAPE){
-        if(ship.isHorizontal){
-            for(int i=0;i<ship.length;i++){
-                b->board[ship.start.row][ship.start.col + i] = ship.type;
-            }
-            int mid = ship.start.col + 1;
-            for(int i=0;i<ship.length;i++){
-                b->board[ship.start.row + i][mid] = ship.type;
-            }
-        }else{
-            for(int i=0;i<ship.length;i++){
-                b->board[ship.start.row + i][ship.start.col] = ship.type;
-            }
-            int mid = ship.start.row + 1;
-            for(int i=0;i<ship.length;i++){
-                b->board[mid][ship.start.col + i] = ship.type;
-            }
-        }
-        return true;
-    }
-
-    if(ship.isHorizontal){ //horizontal
-        for(int i=0;i<ship.length;i++){
-            b->board[ship.start.row][ship.start.col + i] = ship.type;
-        }
-        b->lstOfShips = newShip(b->lstOfShips, ship);
-    }else{//vertical
-        for(int j=0;j<ship.length;j++){
-            b->board[ship.start.row + j][ship.start.col] = ship.type;
-        }
-        b->lstOfShips = newShip(b->lstOfShips, ship);
-    }
-    return true;
-}
-
-int isAWaterShot(Board* b, Coordinate t){
-    if(b->board[t.row][t.col] != -1){
-        return b->board[t.row][t.col];
-    }
-    return -1;
-}
-
-void shoot(Board *b, Coordinate shot, int turn){
-    Ships* s;
-    if(isAWaterShot(b, shot) == -1){
-        printf("Is a water shot!!\n");
-        b->shotsFierd = newShot(b->shotsFierd,shot,false);
-    }else{
-        printf("Is NOT a water shot!!\n");
-        b->board[shot.row][shot.col]=GOODSHOT;
-        b->shotsFierd = newShot(b->shotsFierd,shot,true);
-        s = searchLivingShips(b->lstOfShips, b->board[shot.row][shot.col]);
-        if(s != NULL){
-            if(s->ship.type == TSHAPE){
-                if(s->ship.shotsRecived == s->ship.length + 2){
-                    s->ship.isAlive = false;
-                    s->ship.shotsRecived++;
-                }else{
-                    s->ship.shotsRecived++;
-                }
-            }else{
-                if(s->ship.shotsRecived == s->ship.length + 1){
-                    s->ship.isAlive = false;
-                    s->ship.shotsRecived++;
-                }else{
-                    s->ship.shotsRecived++;
-                }
-            }
+void setHP(Board* p1, Board* p2, int* lstOfShips){
+    for(int i=0;i<6;i++){
+        switch (i)
+        {
+        case CARRIER:
+            p1->hp += CARRIER_SIZE * lstOfShips[i];
+            p2->hp += CARRIER_SIZE * lstOfShips[i];
+            break;
+        case BATTLESHIP:
+            p1->hp += BATTLESHIP_SIZE * lstOfShips[i];
+            p2->hp += BATTLESHIP_SIZE * lstOfShips[i];
+            break;
+        case CRUISER:
+            p1->hp += CRUSIER_SIZE * lstOfShips[i];
+            p2->hp += CRUSIER_SIZE * lstOfShips[i];
+            break;
+        case SUBMARINE:
+            p1->hp += SUBMARINE_SIZE * lstOfShips[i];
+            p2->hp += SUBMARINE_SIZE * lstOfShips[i];
+            break;
+        case DESTROYER:
+            p1->hp += DESTROYER_SIZE * lstOfShips[i];
+            p2->hp += DESTROYER_SIZE * lstOfShips[i];
+            break;
+        case TSHAPE:
+            p1->hp += (TSHAPE_SIZE + 2) * lstOfShips[i];
+            p2->hp += (TSHAPE_SIZE + 2) * lstOfShips[i];
+            break;
         }
     }
 }
 
-bool verifyendgame(){
-	if(turn1 == WIN || turn2 == WIN)
-		return true;
-	else
-		return false;
-}
-
-void printBoard(Board *b , Board *adv){
-	for(int i=0;i<b->rowSize;i++){
+void printBoard(Board *b){
+    for(int i=0 ;i < b->rowSize; i++){
 		if(i <= 9){
             printf(KNRM "\t %d|",i);
         }else{
             printf(KNRM "\t%d|",i);
         }
 
-		for(int j=0;j<b->colSize;j++){
-            switch(b->board[i][j]){
+        for(int j=0; j<b->colSize;j++){
+            switch(b->board[i][j].shipType){
                 case -1:
                     if(j <= 9){
                         printf(KBLU "  ~  |");
@@ -224,12 +118,16 @@ void printBoard(Board *b , Board *adv){
                     printf(KCYN "  T  ");
                     printf(KBLU "|");
                     break;
+                case WATERSHOT:
+                    printf(KRED "  %c  ",254);
+                    printf(KBLU "|");
+                    break;
             }
         }
-		printf("\n");
-	}
+        printf("\n");
+    }
 
-	printf("\t   ");
+    printf("\t   ");
 	for(int k=0;k<b->colSize;k++){
 		if(k <=9){
             printf(KNRM "  %d  |",k);
@@ -241,7 +139,7 @@ void printBoard(Board *b , Board *adv){
 
     Shots* s;
     printf(KMAG "Shots fired: ");
-    for(s = adv->shotsFierd; s != NULL; s = s->next){
+    for(s = b->shotsFierd; s != NULL; s = s->next){
         if(s->isHit){
             printf(KGRN "(%d,%d) ",s->target.row,s->target.col);
         }else{
@@ -251,101 +149,650 @@ void printBoard(Board *b , Board *adv){
     printf(KNRM "\n");
 }
 
+void printAllShipsTypes(){
 
-void randomPlaceShips(Board *b){
-    Ship s1,s2,s3,s4,s5,s6;
+    printf("Name: Carrier: \t Battleship: \t Cruiser:\tSubmarine:\tDestroyer:\tTShape: \n");
+    // printf("Size:    5  \t     4  \t    3  \t\t   3  \t\t    3  \t\t   5  \n");
+    printf("Code:    %d  \t     %d  \t    %d \t\t   %d \t\t    %d \t\t   %d\n\n",CARRIER,BATTLESHIP,CRUISER,SUBMARINE,DESTROYER,TSHAPE);
+    printf("\t " KCYN "C\t     B\t\t    R\t\t   S\t\t    D\t\t" KRED " T " KCYN "T T\n");
+    printf("\t " KCYN "C\t     B\t\t    R\t\t   S\t\t    D\t\t   T  \n");
+    printf("\t " KCYN "C\t     B\t\t    R\t\t   S\t\t     \t\t   T \n");
+    printf("\t " KCYN "C\t     B\t\t     \t\t    \t\t     \t\t     \n");
+    printf("\t " KCYN "C\t      \t\t     \t\t    \t\t     \t\t     \n");
+}
+
+int* selectShips(int row, int col){
+    clearScreen();
+
+    int maxNumberOfShips = (row * col)/ 25;
+    int numShips;
+    printWarningMsgInt("Select how many ships you would like to have? Min: 6 MAX:",maxNumberOfShips);
+    scanf("%d", &numShips);
+
+    while(numShips > maxNumberOfShips || numShips < 6){
+        printErrorMsgInt("Please insert a number between 6 and ",maxNumberOfShips);
+        scanf("%d",&numShips);
+    }
+    int* lstOfShips = malloc(6 * sizeof(int));
+
+    for(int i=0;i<MAXNUMSHIPS;i++){
+        lstOfShips[i] = 1;
+    }
+
+    if(numShips == 6){
+        return lstOfShips;
+    }
+
+    printWarningMsg("Now you will select the types of your ships, remember that you already have 1 of each type :)");
+    printAllShipsTypes();
+    int curQtdShips = 6;
+    int code,qtd;
+    while(curQtdShips < numShips){
+        printWarningMsg("Insert the code of the ship and the quantity: (eg: 0 1)");
+        scanf("%d%d",&code,&qtd);
+        while(curQtdShips + qtd > numShips){
+            printErrorMsgInt("Your max number of ships is: ",numShips);
+            printErrorMsgInt("You can not add this ammount of ships, you already have: ",curQtdShips);
+            printWarningMsg("Insert the code of the ship and the quantity: (eg: 0 1)");
+            scanf("%d%d",&code,&qtd);
+        }
+        curQtdShips += qtd;
+        lstOfShips[code] += qtd;
+    }
+
+    return lstOfShips;
+}
+
+bool isValidPos(Board* b, Ship ship){
+    if(ship.start.col < 0 || ship.start.row < 0 || ship.start.row >= b->rowSize || ship.start.col >= b->colSize){
+        return false;
+    }
+
+    if(ship.rotation != ROTATION_0 && ship.rotation != ROTATION_180 && ship.rotation != ROTATION_270 && ship.rotation != ROTATION_90)
+        return false;
+
+    if(ship.type == TSHAPE){
+        int mid;
+        if(ship.start.col + (TSHAPE_SIZE - 1) >= b->colSize || ship.start.row + (TSHAPE_SIZE - 1) >= b->rowSize){
+            return false;
+        }
+        
+        switch (ship.rotation)
+        {
+        case ROTATION_0:
+            for(int i=0;i < ship.length; i++){
+                if(b->board[ship.start.row][ship.start.col + i].shipType != -1 && (ship.start.col + i) < b->colSize){
+                    return false;
+                }
+            }
+            mid = ship.start.col + 1;
+            for(int i=0;i < ship.length;i++){
+                if(b->board[ship.start.row + i][mid].shipType!= -1 && (ship.start.row + i) < b->rowSize){
+                    return false;
+                }
+            }
+            break;
+        case ROTATION_90:
+            for(int i=0;i<ship.length;i++){
+                if(b->board[ship.start.row - i][ship.start.col].shipType != -1 || (ship.start.row - i) >= 0)
+                    return false;
+            }
+            mid = ship.start.row - 1;
+            for(int i=0;i<ship.length;i++){
+                if(b->board[mid][ship.start.col - i].shipType != -1 || (ship.start.col - i) >= 0)
+                    return false;
+            }
+        break;
+        case ROTATION_180:
+            for(int i=0;i < ship.length;i++){
+                if(b->board[ship.start.row][ship.start.col - i].shipType != -1 || (ship.start.col - i) >= 0)
+                    return false;
+            }
+            mid = ship.start.col - 1;
+            for(int i=0;i < ship.length; i++){
+                if(b->board[ship.start.row - i][mid].shipType != -1 || (ship.start.row - i) >= 0)
+                    return false;
+            }
+            break;
+        case ROTATION_270:
+            for(int i=0;i < ship.length; i++){
+                if(b->board[ship.start.row + i][ship.start.col].shipType != -1 && (ship.start.row + i) < b->rowSize){
+                    return false;
+                }
+            }
+            mid = ship.start.row + 1;
+            for(int i=0;i < ship.length;i++){
+                if(b->board[mid][ship.start.col + i].shipType != -1 && (ship.start.col + i) < b->colSize){
+                    return false;
+                }
+            }
+            break;
+        }
+    }
+
+    switch (ship.rotation){
+    case ROTATION_0:
+        if(ship.start.col + ship.length > b->colSize)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row][ship.start.col + i].shipType != -1)
+                return false;
+        }
+        break;
+    case ROTATION_180:
+        if(ship.start.col - ship.length < -1)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row][ship.start.col - i].shipType != -1)
+                return false;
+        }
+        break;
+    case ROTATION_90:
+        if(ship.start.row - ship.length < -1)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row - i][ship.start.col].shipType != -1)
+                return false;
+        }
+        break;
+    case ROTATION_270:
+        if(ship.start.row + ship.length > b->rowSize)
+            return false;
+
+        for(int i=0;i<ship.length;i++){
+            if(b->board[ship.start.row + i][ship.start.col].shipType != -1){
+                return false;
+            }
+        }
+        break;
+    }
+
+    return true;
+}
+
+bool setShip(Board *b, Ship ship){
+    if(!isValidPos(b,ship)){
+        return false;
+    }
+
+    if(ship.type == TSHAPE){
+        int mid;
+        switch (ship.rotation)
+        {
+        case ROTATION_0:
+            for(int i=0;i<ship.length;i++){
+                b->board[ship.start.row][ship.start.col + i].shipType = ship.type;
+                b->board[ship.start.row][ship.start.col + i].hasShip = true;
+            }
+            mid = ship.start.col + 1;
+            for(int i=0;i<ship.length;i++){
+                b->board[ship.start.row + i][mid].shipType = ship.type;
+                b->board[ship.start.row + i][mid].hasShip = true;
+            }
+            break;
+        case ROTATION_90:
+            for(int i=0;i<ship.length;i++){
+                b->board[ship.start.row - i][ship.start.col].shipType = ship.type;
+                b->board[ship.start.row - i][ship.start.col].hasShip = true;
+            }
+            mid = ship.start.row - 1;
+            for(int i=0;i<ship.length;i++){
+                b->board[mid][ship.start.col - i].shipType = ship.type;
+                b->board[mid][ship.start.col - i].hasShip = true;
+            }
+            break;
+        case ROTATION_180:
+            for(int i=0;i < ship.length;i++){
+                b->board[ship.start.row][ship.start.col - i].shipType = ship.type;
+                b->board[ship.start.row][ship.start.col - i].hasShip = true;
+            }
+            mid = ship.start.col - 1;
+            for(int i=0;i < ship.length; i++){
+                b->board[ship.start.row - i][mid].shipType = ship.type;
+                b->board[ship.start.row - i][mid].hasShip = true;
+            }
+            break;
+        case ROTATION_270:
+            for(int i=0;i<ship.length;i++){
+                b->board[ship.start.row + i][ship.start.col].shipType = ship.type;
+                b->board[ship.start.row + i][ship.start.col].hasShip = true;
+            }
+            mid = ship.start.row + 1;
+            for(int i=0;i<ship.length;i++){
+                b->board[mid][ship.start.col + i].shipType = ship.type;
+                b->board[mid][ship.start.col + i].hasShip = true;
+            }
+            break;
+        }
+        return true;
+    }
+
+
+    switch (ship.rotation)
+    {
+    case ROTATION_0:
+        for(int i=0;i<ship.length;i++){
+            b->board[ship.start.row][ship.start.col + i].shipType = ship.type;
+            b->board[ship.start.row][ship.start.col + i].hasShip = true;
+        }
+        break;
+    case ROTATION_270:
+        for(int j=0;j<ship.length;j++){
+            b->board[ship.start.row + j][ship.start.col].shipType = ship.type;
+            b->board[ship.start.row + j][ship.start.col].hasShip = true;
+        }
+        break;
+    case ROTATION_180:
+        for(int i=0;i<ship.length;i++){
+            b->board[ship.start.row][ship.start.col - i].shipType = ship.type;
+            b->board[ship.start.row][ship.start.col - i].hasShip = true;
+        }
+        break;
+    case ROTATION_90:
+        for(int j=0;j<ship.length;j++){
+            b->board[ship.start.row - j][ship.start.col].shipType = ship.type;
+            b->board[ship.start.row - j][ship.start.col].hasShip = true;
+        }
+        break;
+    }
+    return true;
+}
+
+void randomPlaceShips(Board *b, int* lstOfShips){
+    Ship s;
+    Coordinate c;
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     srand((time_t)ts.tv_nsec);
     bool isNotOnBoard = true;
 
-    s1.isAlive = true;
-    s1.length = CARRIER_SIZE;
-    s1.type = CARRIER;
-    s1.shotsRecived = 0;
-    while(isNotOnBoard){
-        s1.start.row = (rand() % (b->rowSize - CARRIER_SIZE + 1));
-        s1.start.col = (rand() % (b->colSize - CARRIER_SIZE + 1));
-        s1.isHorizontal = (rand() % 2);
-        bool aux = setShipPos(b,s1);
-        if(aux == true){
-            isNotOnBoard = false;
+
+    for(int i=0;i<6;i++){
+        switch (i)
+        {
+        case CARRIER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = CARRIER_SIZE;
+                s.type = CARRIER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - CARRIER_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - CARRIER_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case BATTLESHIP:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = BATTLESHIP_SIZE;
+                s.type = BATTLESHIP;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - BATTLESHIP_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - BATTLESHIP_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case CRUISER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = CRUSIER_SIZE;
+                s.type = CRUISER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - CRUSIER_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - CRUSIER_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case SUBMARINE:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = SUBMARINE_SIZE;
+                s.type = SUBMARINE;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - SUBMARINE_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - SUBMARINE_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case DESTROYER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = DESTROYER_SIZE;
+                s.type = DESTROYER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - DESTROYER_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case TSHAPE:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = TSHAPE_SIZE;
+                s.type = TSHAPE;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (b->rowSize - TSHAPE_SIZE + 1));
+                    s.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
+                    if(setShip(b,s)){
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
         }
     }
+}
 
-    isNotOnBoard = true;
-    s2.isAlive = true;
-    s2.length = BATTLESHIP_SIZE;
-    s2.type = BATTLESHIP;
-    s2.shotsRecived = 0;
-    while(isNotOnBoard){
-        s2.start.row = (rand() % (b->rowSize - BATTLESHIP_SIZE + 1));
-        s2.start.col = (rand() % (b->colSize - BATTLESHIP_SIZE + 1));
-        s2.isHorizontal = (rand() % 2);
-        bool aux = setShipPos(b,s2);
-        if(aux == true){
-            isNotOnBoard = false;
+void manualyPlanceShips(Board* b, int* lstOfShips){
+
+	Ship s;
+    Coordinate c;
+    int r,col,rot;
+	for(int i=0 ; i < 6 ; i++){
+		switch(i){
+			case CARRIER:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = CARRIER_SIZE;
+                    s.type = CARRIER;
+                    clearScreen();
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Carrier ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    while(setShip(b,s) == false){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Carrier ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                    }
+                printBoard(b);
+                }
+			break;
+			case BATTLESHIP:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = BATTLESHIP_SIZE;
+                    s.type = BATTLESHIP;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Battleship ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    while(setShip(b,s) == false){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Battleship ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                    }
+                    printBoard(b);
+                }
+			break;
+			case CRUISER:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = CRUSIER_SIZE;
+                    s.type = CRUISER;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Cruiser ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    while(setShip(b,s) == false){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Cruiser ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                    }
+                    printBoard(b);
+                }
+			break;
+			case SUBMARINE:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = SUBMARINE_SIZE;
+                    s.type = SUBMARINE;
+                    printWarningMsg("Specify the initial coordinates(row,col) of Submarine ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    while(setShip(b,s) == false){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Submarine ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                    }
+                    printBoard(b);
+                }
+			break;
+			case DESTROYER:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = DESTROYER_SIZE;
+                    s.type = DESTROYER;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Destroyer ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    while(setShip(b,s) == false){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Destroyer ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d", &r, &col, &rot);
+                        s.start.row = r ;
+                        s.start.col = col ;
+                        s.rotation = convertRotation(rot);
+                    }
+                    printBoard(b);
+                }
+			break;
+			case TSHAPE:
+        for(int k=0;k<lstOfShips[i];k++){
+            s.length = TSHAPE_SIZE;
+            s.type = TSHAPE;
+            printAllShipsTypes();
+            printWarningMsg("Specify the initial coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
+            scanf("%d %d %d",&r,&col,&rot);
+            s.start.row = r;
+            s.start.col = col;
+            s.rotation = convertRotation(rot);
+            while(setShip(b,s) == false){
+                clearScreen();
+                printAllShipsTypes();
+                printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                printWarningMsg("Please specify news coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
+                scanf("%d %d %d", &r, &col, &rot);
+                s.start.row = r ;
+                s.start.col = col ;
+                s.rotation = convertRotation(rot);
+            }
+            printBoard(b);
+        }
+			break;
+		}
+	}
+}
+
+
+int convertRotation(int rot){
+	if(rot == 0){
+		return ROTATION_0;
+	}
+	if(rot == 90){
+		return ROTATION_90;
+	}
+	if(rot == 180){
+		return ROTATION_180;
+	}
+	if(rot == 270){
+		return ROTATION_270;
+	}
+    return 0;
+}
+
+void fire(Board* p1board, Board* p2board){
+	int tmp=0;
+	int turn=1;
+	Coordinate shot;
+	int r,c;
+
+	while(tmp != 1){
+		if(turn == 1){
+			printWarningMsg("Player 1 is your turn!");
+            printWarningMsg("Specify the coordinates of your shots:");
+			for(int i=0;i<3;i++){
+				printWarningMsgInt("Shot %d:" ,i+1);
+				scanf("%d %d",&r,&c);
+				shot.row=r;
+				shot.col=c;
+				while(r<0 || c<0 ||  r>p1board->rowSize || c >= p1board->colSize){
+					printErrorMsg("That is an invalid Coordinate, please respect the board edges.");
+					printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
+					printWarningMsgInt("Shot %d:",i+1);
+					scanf("%d %d",&r,&c);
+                    shot.row=r;
+                    shot.col=c;
+				}
+        while(p2board->board[r][c].wasHit == true){
+            printErrorMsg("Coordinate already been used, please enter a new coordinate.");
+            printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
+            printWarningMsgInt("Shot %d:" ,i+1);
+            scanf("%d %d",&r,&c);
+            shot.row=r;
+            shot.col=c;
+        }
+        if(p2board->board[r][c].shipType != -1 && p2board->board[r][c].wasHit == false && p2board->board[r][c].shipType != GOODSHOT){
+            printf("ENTROU NO IF OK\n");
+            p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
+            p2board-> hp-- ;
+            p2board->board[r][c].wasHit = true;
+            p2board->board[r][c].shipType = GOODSHOT;
+            if(p2board->hp == 0){
+                printSuccessMsg("Congratulations , Player 1 won! ");
+                tmp=2;
+            }
+            printBoard(p2board);
+        }else{
+            p2board->board[r][c].shipType = WATERSHOT;
+            printBoard(p2board);
+        }
+			}
+			turn=2;
+        }
+
+    if(turn == 2){
+        clearScreen();
+        printBoard(p1board);
+        printWarningMsg("Player 2 is your turn!");
+        printWarningMsg("Specify the coordinates of your shots:");
+        for(int i=0;i<3;i++){
+            printWarningMsgInt("Shot %d:" ,i+1);
+            scanf("%d %d",&r,&c);
+            shot.row=r;
+            shot.col=c;
+            while(r<0 || c<0 ||  r>p2board->rowSize || c >= p2board->colSize ){
+                printErrorMsg("That is an invalid Coordinate, please respect the board edges.");
+                printWarningMsg("Player 2 introduce one shot coordinates (R C):\n");
+                printWarningMsgInt("Shot %d:" ,i+1);
+                scanf("%d %d",&r,&c);
+            shot.row=r;
+            shot.col=c;
+        }
+        while(p1board->board[r][c].wasHit == true){
+            printErrorMsg("Coordinate already been used, please enter a new coordinate.");
+            printWarningMsg("Player 2 introduce one shot coordinates (R C):\n");
+            printWarningMsgInt("Shot %d:" ,i+1);
+            scanf("%d %d",&r,&c);
+            shot.row=r;
+            shot.col=c;
+        }
+        if(p1board->board[r][c].shipType != -1 && p1board->board[r][c].wasHit == false && p1board->board[r][c].shipType != 6){
+            p1board->shotsFierd = newShot(p1board->shotsFierd,shot,true);
+            p1board-> hp-- ;
+            p1board->board[r][c].shipType = 6;
+            p1board->board[r][c].wasHit = true;
+            if(p1board->hp == 0){
+                printSuccessMsg("Congratulations , Player 2 won! ");
+                tmp=2;
+            }
+            printBoard(p1board);
+        }else{
+            p1board->board[r][c].shipType = WATERSHOT;
+            printBoard(p1board);
+        }
+        
+        }
+            turn=1;
         }
     }
+}
 
-    isNotOnBoard = true;
-    s3.isAlive = true;
-    s3.length = CRUSIER_SIZE;
-    s3.type = CRUISER;
-    s3.shotsRecived = 0;
-    while(isNotOnBoard){
-        s3.start.row = (rand() % (b->rowSize - CRUSIER_SIZE + 1));
-        s3.start.col = (rand() % (b->colSize - CRUSIER_SIZE + 1));
-        s3.isHorizontal = (rand() % 2);
-        bool aux = setShipPos(b,s3);
-        if(aux == true){
-            isNotOnBoard = false;
-        }
-
+Shots* newShot(Shots* lst, Coordinate s, bool isHit){
+    Shots* node = (Shots*)malloc(sizeof(Shots));
+    if(node != NULL){
+        node->next = lst;
+        node->target.row = s.row;
+        node->target.col = s.col;
+        node->isHit=isHit;
     }
+    return node;
+}
 
-    isNotOnBoard = true;
-    s4.isAlive = true;
-    s4.length = SUBMARINE_SIZE;
-    s4.type = SUBMARINE;
-    s4.shotsRecived = 0;
-    while(isNotOnBoard){
-        s4.start.row = (rand() % (b->rowSize - SUBMARINE_SIZE + 1));
-        s4.start.col = (rand() % (b->colSize - SUBMARINE_SIZE + 1));
-        s4.isHorizontal = (rand() % 2);
-        bool aux = setShipPos(b,s4);
-        if(aux == true){
-            isNotOnBoard = false;
+Shots* searchShot(Shots* lst, Coordinate k){
+    Shots* p;
+    for(p=lst; p!=NULL; p = p->next){
+        if(p->target.row == k.row && p->target.col == k.col){
+            return p;
         }
     }
+    return NULL;
+}
 
-    isNotOnBoard = true;
-    s5.isAlive = true;
-    s5.length = DESTROYER_SIZE;
-    s5.type = DESTROYER;
-    s5.shotsRecived = 0;
-    while(isNotOnBoard){
-        s5.start.row = (rand() % (b->rowSize - DESTROYER_SIZE + 1));
-        s5.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
-        s5.isHorizontal = (rand() % 2);
-        bool aux = setShipPos(b,s5);
-        if(aux == true){
-            isNotOnBoard = false;
-        }
-    }
-
-    isNotOnBoard = true;
-    s6.isAlive = true;
-    s6.length = TSHAPE_SIZE;
-    s6.type = TSHAPE;
-    s6.shotsRecived = 0;
-    while(isNotOnBoard){
-        s6.start.row = (rand() % (b->rowSize - TSHAPE_SIZE + 1));
-        s6.start.col = (rand() % (b->colSize - DESTROYER_SIZE + 1));
-        s6.isHorizontal = (rand() % 2);
-        bool aux = setShipPos(b, s6);
-        if(aux == true){
-            isNotOnBoard = false;
-        }
+void clearShots(Shots *lst){
+    Shots* s = lst, *aux;
+    while(s != NULL){
+        aux = s->next;
+        free(s);
+        s = aux;
     }
 }

@@ -1,38 +1,75 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include "ships.h"
+#include "utils.h"
 
-#define WIN 2
+#define MAXNUMSHIPS 16
+#define CARRIER_SIZE 5
+#define TSHAPE_SIZE 3 //+2 for the front part
+#define BATTLESHIP_SIZE 4
+#define CRUSIER_SIZE 3
+#define SUBMARINE_SIZE 3
+#define DESTROYER_SIZE 2
+#define ROTATION_0 0
+#define ROTATION_90 1
+#define ROTATION_180 2
+#define ROTATION_270 3
 
+typedef struct _Coordinate{
+    int row;
+    int col;
+}Coordinate;
 
-#define KNRM  "\x1B[0m"
-#define KRED  "\x1B[31m"
-#define KGRN  "\x1B[32m"
-#define KYEL  "\x1B[33m"
-#define KBLU  "\x1B[34m"
-#define KMAG  "\x1B[35m"
-#define KCYN  "\x1B[36m"
-#define KWHT  "\x1B[37m"
+enum ShipType{
+    CARRIER,  //0
+    BATTLESHIP, //1
+    CRUISER,   //2
+    SUBMARINE,  //3
+    DESTROYER,  //4
+    TSHAPE,  //5
+    GOODSHOT, //hit the target
+    WATERSHOT
+};
+
+typedef struct _Shots{
+    Coordinate target;
+    bool isHit;
+    struct _Shots* next;
+} Shots;
+
+typedef struct _Cell{
+    bool hasShip;
+    bool wasHit;
+    int shipType;
+} Cell;
+
+typedef struct _Ship{
+    int type;
+    int length;
+    Coordinate start;
+    int rotation;
+} Ship;
 
 typedef struct _Board{
-    int **board;
+    Cell **board;
     int rowSize;
     int colSize;
-    Ships* lstOfShips;
     Shots* shotsFierd;
+    int hp;
 } Board;
 
-Board* newBoard(int row, int col);
+
+void newBoard(int row, int col, Board* p1, Board* p2);
 void clearBoard(Board* b);
+void setHP(Board* p1, Board* p2, int* lstOfShips);
 
-void shoot(Board *b, Coordinate shot, int turn);
-bool verifyendgame();
-int isAWaterShot(Board* b, Coordinate t);
+void printBoard(Board *b);
+void printAllShipsTypes();
 
-void randomPlaceShips(Board *b);
-bool setShipPos(Board *b, Ship ship);
+int* selectShips(int row, int col);
 bool isValidPos(Board* b, Ship ship);
-
-void printBoard(Board* b, Board* a);
+bool setShip(Board *b, Ship ship);
+void randomPlaceShips(Board *b, int* lstOfShips);
+void manualyPlanceShips(Board* b, int* lstOfShips);
+int convertRotation(int rot);
+Shots* newShot(Shots* lst, Coordinate s, bool isHit);
+void clearShots(Shots *lst);
+Shots* searchShot(Shots* lst, Coordinate k);
+void fire(Board* p1board, Board* p2board);
