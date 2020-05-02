@@ -49,6 +49,7 @@ int main(int argc, char *argv[]){
 
     printBoard(p1);
     printBoard(p2);
+    fire(p1,p2);
 
     return 0;
 }
