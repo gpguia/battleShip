@@ -440,7 +440,6 @@ void randomPlaceShips(Board *b, int* lstOfShips){
 }
 
 void manualyPlanceShips(Board* b, int* lstOfShips){
-
 	Ship s;
     Coordinate c;
     int r,col,rot;
@@ -448,147 +447,144 @@ void manualyPlanceShips(Board* b, int* lstOfShips){
 		switch(i){
 			case CARRIER:
 				for(int k=0;k<lstOfShips[i];k++){
-                	s.length = CARRIER_SIZE;
-                	s.type = CARRIER;
-                  clearScreen();
-                  printAllShipsTypes();
-               		printWarningMsg("Specify the initial coordinates(row,col) of Carrier ship and your rotation. (eg 5 5 90)");
-               		scanf("%d %d %d",&r,&col,&rot);
-               		s.start.row = r;
-               		s.start.col = col;
-               		s.rotation = convertRotation(rot);
+                    s.length = CARRIER_SIZE;
+                    s.type = CARRIER;
+                    clearScreen();
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Carrier ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
                     while(setShip(b,s) == false){
                         clearScreen();
                         printAllShipsTypes();
                         printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
                         printWarningMsg("Please specify news coordinates(row,col) of Carrier ship and your rotation. (eg 5 5 90)");
                         scanf("%d %d %d",&r,&col,&rot);
-                   			s.start.row = r;
-                   			s.start.col = col;
-                   			s.rotation = convertRotation(rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
                     }
-                  printBoard(b);
+                    printBoard(b);
                 }
 			break;
 			case BATTLESHIP:
 				for(int k=0;k<lstOfShips[i];k++){
-                	s.length = BATTLESHIP_SIZE;
-                	s.type = BATTLESHIP;
-                  printAllShipsTypes();
-               		printWarningMsg("Specify the initial coordinates(row,col) of Battleship ship and your rotation. (eg 5 5 90)");
-               		scanf("%d %d %d",&r,&col,&rot);
-               		s.start.row = r;
-               		s.start.col = col;
-               		s.rotation = convertRotation(rot);
+                    s.length = BATTLESHIP_SIZE;
+                    s.type = BATTLESHIP;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Battleship ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
                     while(setShip(b,s) == false){
                         clearScreen();
                         printAllShipsTypes();
                         printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
                         printWarningMsg("Please specify news coordinates(row,col) of Battleship ship and your rotation. (eg 5 5 90)");
                         scanf("%d %d %d",&r,&col,&rot);
-               			s.start.row = r;
-               			s.start.col = col;
-               			s.rotation = convertRotation(rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
                     }
                     printBoard(b);
                 }
 			break;
 			case CRUISER:
 				for(int k=0;k<lstOfShips[i];k++){
-                	s.length = CRUSIER_SIZE;
-                	s.type = CRUISER;
-                  printAllShipsTypes();
-               		printWarningMsg("Specify the initial coordinates(row,col) of Cruiser ship and your rotation. (eg 5 5 90)");
-               		scanf("%d %d %d",&r,&col,&rot);
-               		s.start.row = r;
-               		s.start.col = col;
-               		s.rotation = convertRotation(rot);
+                    s.length = CRUSIER_SIZE;
+                    s.type = CRUISER;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Cruiser ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
                     while(setShip(b,s) == false){
                         clearScreen();
                         printAllShipsTypes();
                         printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
                         printWarningMsg("Please specify news coordinates(row,col) of Cruiser ship and your rotation. (eg 5 5 90)");
                         scanf("%d %d %d",&r,&col,&rot);
-               			s.start.row = r;
-               			s.start.col = col;
-               			s.rotation = convertRotation(rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
                     }
                     printBoard(b);
                 }
 			break;
 			case SUBMARINE:
 				for(int k=0;k<lstOfShips[i];k++){
-                	s.length = SUBMARINE_SIZE;
-                	s.type = SUBMARINE;
-               		printWarningMsg("Specify the initial coordinates(row,col) of Submarine ship and your rotation. (eg 5 5 90)");
-               		scanf("%d %d %d",&r,&col,&rot);
-               		s.start.row = r;
-               		s.start.col = col;
-               		s.rotation = convertRotation(rot);
+                    s.length = SUBMARINE_SIZE;
+                    s.type = SUBMARINE;
+                    printWarningMsg("Specify the initial coordinates(row,col) of Submarine ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
                     while(setShip(b,s) == false){
                         clearScreen();
                         printAllShipsTypes();
                         printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
                         printWarningMsg("Please specify news coordinates(row,col) of Submarine ship and your rotation. (eg 5 5 90)");
                         scanf("%d %d %d",&r,&col,&rot);
-               			s.start.row = r;
-               			s.start.col = col;
-               			s.rotation = convertRotation(rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
                     }
                     printBoard(b);
                 }
 			break;
 			case DESTROYER:
 				for(int k=0;k<lstOfShips[i];k++){
-                	s.length = DESTROYER_SIZE;
-                	s.type = DESTROYER;
-                  printAllShipsTypes();
-               		printWarningMsg("Specify the initial coordinates(row,col) of Destroyer ship and your rotation. (eg 5 5 90)");
-               		scanf("%d %d %d",&r,&col,&rot);
-               		s.start.row = r;
-               		s.start.col = col;
-               		s.rotation = convertRotation(rot);
+                    s.length = DESTROYER_SIZE;
+                    s.type = DESTROYER;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Destroyer ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
                     while(setShip(b,s) == false){
                         clearScreen();
                         printAllShipsTypes();
                         printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
                         printWarningMsg("Please specify news coordinates(row,col) of Destroyer ship and your rotation. (eg 5 5 90)");
                         scanf("%d %d %d", &r, &col, &rot);
-               			s.start.row = r ;
-               			s.start.col = col ;
-               			s.rotation = convertRotation(rot);
+                        s.start.row = r ;
+                        s.start.col = col ;
+                        s.rotation = convertRotation(rot);
                     }
                     printBoard(b);
                 }
 			break;
 			case TSHAPE:
         for(int k=0;k<lstOfShips[i];k++){
-                  s.length = TSHAPE_SIZE;
-                  s.type = TSHAPE;
-                  printAllShipsTypes();
-                  printWarningMsg("Specify the initial coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
-                  scanf("%d %d %d",&r,&col,&rot);
-                  s.start.row = r;
-                  s.start.col = col;
-                  s.rotation = convertRotation(rot);
+                    s.length = TSHAPE_SIZE;
+                    s.type = TSHAPE;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
                     while(setShip(b,s) == false){
-                      clearScreen();
-                      printAllShipsTypes();
-                      printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
-                      printWarningMsg("Please specify news coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
-                      scanf("%d %d %d", &r, &col, &rot);
-                      s.start.row = r ;
-                      s.start.col = col ;
-                      s.rotation = convertRotation(rot);
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d", &r, &col, &rot);
+                        s.start.row = r ;
+                        s.start.col = col ;
+                        s.rotation = convertRotation(rot);
                     }
                     printBoard(b);
                 }
 			break;
 		}
-
-
 	}
-
 }
 
 
@@ -605,102 +601,122 @@ int convertRotation(int rot){
 	if(rot == 270){
 		return ROTATION_270;
 	}
+    return 0;
 }
 
-/*
 void fire(Board* p1board, Board* p2board){
 	int tmp=0;
 	int turn=1;
 	Coordinate shot;
 	int r,c;
-	Shots* p;
-
-	globalprint(p1board,p2board);
 
 	while(tmp != 1){
 
 		if(turn == 1){
-			printf("PLAYER1 Introduce 3 shots coordinates (R C):\n");
+			printWarningMsg("Player 1 is your turn!");
+            printWarningMsg("Specify the coordinates of your shots:");
 			for(int i=0;i<3;i++){
-				printf("Shot %d:" ,i+1);
+				printWarningMsgInt("Shot %d:" ,i+1);
 				scanf("%d %d",&r,&c);
 				shot.row=r;
 				shot.col=c;
-				p=searchShot(p2board->shotsFierd,shot);
-				while(r<0 || c<0 ||  r>p1board->rowSize || c >= p1board->colSize || p!=NULL ){
-					printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
-					printf("PLAYER1 Introduce 3 shots coordinates (R C):\n");
-					printf("Shot %d:" ,i+1);
+				while(r<0 || c<0 ||  r>p1board->rowSize || c >= p1board->colSize){
+					printErrorMsg("That is an invalid Coordinate, please respect the board edges.");
+					printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
+					printWarningMsgInt("Shot %d:",i+1);
 					scanf("%d %d",&r,&c);
+            shot.row=r;
+            shot.col=c;
 				}
-				shot.row=r;
-		  	shot.col=c;
-				shoot(p2board,shot,turn);
-				globalprint(p1board,p2board);
-				if(verifyendgame() == true){
-					printf("PLAYER1 WIN");
-					tmp=1;
-					return;
-				}
+        while(p2board->board[r][c].wasHit == true){
+            printErrorMsg("Coordinate already been used, please enter a new coordinate.");
+            printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
+            printWarningMsgInt("Shot %d:" ,i+1);
+            scanf("%d %d",&r,&c);
+            shot.row=r;
+  		  	shot.col=c;
+        }
+        if(p2board->board[r][c].shipType != -1 && p2board->board[r][c].wasHit == false && p2board->board[r][c].shipType == 6){
+          p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
+          p2board-> hp-- ;
+          p2board->board[r][c].shipType = true;
+          if(p2board->hp == 0){
+            printSuccessMsg("Congratulations , Player 1 won! ");
+            tmp=2;
+          }
+          printBoard(p1board);
+        }
 			}
 			turn=2;
-		}
-		if(turn == 2){
-			printf("PLAYER2 Introduce 3 shots coordinates (R C):\n");
-			for(int j=0; j<3;j++){
-				printf("Shot %d:" ,j+1);
+		  }
+
+    if(turn == 2){
+			printWarningMsg("Player 2 is your turn!");
+            printWarningMsg("Specify the coordinates of your shots:");
+			for(int i=0;i<3;i++){
+				printWarningMsgInt("Shot %d:" ,i+1);
 				scanf("%d %d",&r,&c);
-				while(r<0 || c<0 ||  r>p1board->rowSize || c >= p1board->colSize){
-					printf(KRED "That is an invalid Coordinate, please respect the board edges.\n" KNRM);
-					printf("PLAYER2 Introduce 3 shots coordinates (R C):\n");
-					printf("Shot %d:" ,j+1);
-					scanf("%d %d",&r,&c);
-				}
 				shot.row=r;
-		  	shot.col=c;
-				shoot(p1board,shot,turn);
-				globalprint(p1board,p2board);
-				if(verifyendgame() == true ){
-					printf("PLAYER2 WIN");
-					tmp=1;
-					return;
+				shot.col=c;
+				while(r<0 || c<0 ||  r>p2board->rowSize || c >= p2board->colSize ){
+					printErrorMsg("That is an invalid Coordinate, please respect the board edges.");
+					printWarningMsg("Player 2 introduce one shot coordinates (R C):\n");
+					printWarningMsgInt("Shot %d:" ,i+1);
+					scanf("%d %d",&r,&c);
+            shot.row=r;
+            shot.col=c;
 				}
-			}
-			turn=1;
-		}
-
-	}
-
-}
-
-void shoot(Board *b, Coordinate shot, int turn){
-    Ships* s;
-    if(isAWaterShot(b, shot) == -1){
-        printf("Is a water shot!!\n");
-        b->shotsFierd = newShot(b->shotsFierd,shot,false);
-    }else{
-        printf("Is NOT a water shot!!\n");
-        b->board[shot.row][shot.col]=GOODSHOT;
-        b->shotsFierd = newShot(b->shotsFierd,shot,true);
-        s = searchLivingShips(b->lstOfShips, b->board[shot.row][shot.col]);
-        if(s != NULL){
-            if(s->ship.type == TSHAPE){
-                if(s->ship.shotsRecived == s->ship.length + 2){
-                    s->ship.isAlive = false;
-                    s->ship.shotsRecived++;
-                }else{
-                    s->ship.shotsRecived++;
-                }
-            }else{
-                if(s->ship.shotsRecived == s->ship.length + 1){
-                    s->ship.isAlive = false;
-                    s->ship.shotsRecived++;
-                }else{
-                    s->ship.shotsRecived++;
-
-                }
-            }
+        while(p1board->board[r][c].wasHit == true){
+            printErrorMsg("Coordinate already been used, please enter a new coordinate.");
+            printWarningMsg("Player 2 introduce one shot coordinates (R C):\n");
+            printWarningMsgInt("Shot %d:" ,i+1);
+            scanf("%d %d",&r,&c);
+            shot.row=r;
+  		  	shot.col=c;
         }
+        if(p2board->board[r][c].shipType != -1 && p1board->board[r][c].shipType != 100 && p1board->board[r][c].hasShip == true ){
+            p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
+            p1board-> hp-- ;
+            p1board->board[r][c].shipType = true;
+            if(p1board->hp == 0){
+                printSuccessMsg("Congratulations , Player 2 won! ");
+                tmp=2;
+            }
+
+            printBoard(p2board);
+        }
+			}
+            turn=1;
+	    }
     }
 }
-*/
+
+Shots* newShot(Shots* lst, Coordinate s, bool isHit){
+    Shots* node = (Shots*)malloc(sizeof(Shots));
+    if(node != NULL){
+        node->next = lst;
+        node->target.row = s.row;
+        node->target.col = s.col;
+        node->isHit=isHit;
+    }
+    return node;
+}
+
+Shots* searchShot(Shots* lst, Coordinate k){
+    Shots* p;
+    for(p=lst; p!=NULL; p = p->next){
+        if(p->target.row == k.row && p->target.col == k.col){
+            return p;
+        }
+    }
+    return NULL;
+}
+
+void clearShots(Shots *lst){
+    Shots* s = lst, *aux;
+    while(s != NULL){
+        aux = s->next;
+        free(s);
+        s = aux;
+    }
+}
