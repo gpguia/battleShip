@@ -73,3 +73,4 @@ Shots* newShot(Shots* lst, Coordinate s, bool isHit);
 void clearShots(Shots *lst);
 Shots* searchShot(Shots* lst, Coordinate k);
 void fire(Board* p1board, Board* p2board);
+void printShots(Shots* lst);

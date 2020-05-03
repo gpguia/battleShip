@@ -119,7 +119,7 @@ void printBoard(Board *b){
                     printf(KBLU "|");
                     break;
                 case WATERSHOT:
-                    printf(KRED "  %c  ",254);
+                    printf(KRED "  X  ");
                     printf(KBLU "|");
                     break;
             }
@@ -135,18 +135,6 @@ void printBoard(Board *b){
             printf(KNRM "  %d |",k);
         }
 	}
-	printf("\n\n");
-
-    Shots* s;
-    printf(KMAG "Shots fired: ");
-    for(s = b->shotsFierd; s != NULL; s = s->next){
-        if(s->isHit){
-            printf(KGRN "(%d,%d) ",s->target.row,s->target.col);
-        }else{
-            printf(KRED "(%d,%d) ",s->target.row,s->target.col);
-        }
-    }
-    printf(KNRM "\n");
 }
 
 void printAllShipsTypes(){
@@ -234,25 +222,31 @@ bool isValidPos(Board* b, Ship ship){
             break;
         case ROTATION_90:
             for(int i=0;i<ship.length;i++){
-              printf("row-i %d \n",ship.start.row-i);
-                if(b->board[ship.start.row - i][ship.start.col].shipType != -1 && (ship.start.row - i) < 0)
+                if(ship.start.row - i < 0)
+                    return false;
+                if(b->board[ship.start.row - i][ship.start.col].shipType != -1)
                     return false;
             }
             mid = ship.start.row - 1;
             for(int i=0;i<ship.length;i++){
-              printf("col-i %d \n",ship.start.col-i);
-                if(b->board[mid][ship.start.col - i].shipType != -1 && (ship.start.col - i) < 0)
+                if(ship.start.col - i < 0)
+                    return false;
+                if(b->board[mid][ship.start.col - i].shipType != -1)
                     return false;
             }
         break;
         case ROTATION_180:
             for(int i=0;i < ship.length;i++){
-                if(b->board[ship.start.row][ship.start.col - i].shipType != -1 && (ship.start.col - i) < 0)
+                if(ship.start.col - i < 0)
+                    return false;
+                if(b->board[ship.start.row][ship.start.col - i].shipType != -1)
                     return false;
             }
             mid = ship.start.col - 1;
             for(int i=0;i < ship.length; i++){
-                if(b->board[ship.start.row - i][mid].shipType != -1 && (ship.start.row - i) < 0)
+                if(ship.start.row - i< 0)
+                    return false;
+                if(b->board[ship.start.row - i][mid].shipType != -1)
                     return false;
             }
             break;
@@ -680,7 +674,10 @@ void fire(Board* p1board, Board* p2board){
 
 	while(tmp != 1){
 		if(turn == 1){
-			printWarningMsg("Player 1 is your turn!");
+            clearScreen();
+            printWarningMsg("\t\t\t\t\t\t\t#### Board Player 1 ###\n\n");
+            printBoard(p1board);
+			printWarningMsg("\n\nPlayer 1 is your turn!\n");
             printWarningMsg("Specify the coordinates of your shots:");
 			for(int i=0;i<3;i++){
 				printWarningMsgInt("Shot" ,i+1);
@@ -712,11 +709,11 @@ void fire(Board* p1board, Board* p2board){
                 printSuccessMsg("Congratulations , Player 1 won! ");
                 tmp=2;
             }
-            printBoard(p1board);
+            printShots(p1board->shotsFierd);
         }else{
             p1board->shotsFierd = newShot(p1board->shotsFierd,shot,false);
             p2board->board[r][c].shipType = WATERSHOT;
-            printBoard(p1board);
+            printShots(p1board->shotsFierd);
         }
 			}
 			turn=2;
@@ -724,8 +721,9 @@ void fire(Board* p1board, Board* p2board){
 
     if(turn == 2){
         clearScreen();
-        printBoard(p1board);
-        printWarningMsg("Player 2 is your turn!");
+        printWarningMsg("\t\t\t\t\t\t\t#### Board Player 1 ###\n\n");
+        printBoard(p2board);
+        printWarningMsg("\n\nPlayer 2 is your turn!");
         printWarningMsg("Specify the coordinates of your shots:");
         for(int i=0;i<3;i++){
             printWarningMsgInt("Shot" ,i+1);
@@ -757,11 +755,11 @@ void fire(Board* p1board, Board* p2board){
                 printSuccessMsg("Congratulations , Player 2 won! ");
                 tmp=2;
             }
-            printBoard(p2board);
+            printShots(p2board->shotsFierd);
         }else{
             p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
             p1board->board[r][c].shipType = WATERSHOT;
-            printBoard(p2board);
+            printShots(p1board->shotsFierd);
         }
 
         }
@@ -798,4 +796,17 @@ void clearShots(Shots *lst){
         free(s);
         s = aux;
     }
+}
+
+void printShots(Shots* lst){
+    Shots* s;
+    printf(KMAG "Shots fired: ");
+    for(s = lst; s != NULL; s = s->next){
+        if(s->isHit){
+            printf(KGRN "(%d,%d) ",s->target.row,s->target.col);
+        }else{
+            printf(KRED "(%d,%d) ",s->target.row,s->target.col);
+        }
+    }
+    printf(KNRM "\n");
 }

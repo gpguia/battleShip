@@ -20,6 +20,18 @@ int main(int argc, char *argv[]){
     
     lstOfShips = selectShips(p1->rowSize,p1->colSize);
     setHP(p1,p2,lstOfShips);
+    
+    // Coordinate c;
+    // c.row = 1;
+    // c.col = 13;
+    // Ship s;
+    // s.length = TSHAPE_SIZE;
+    // s.rotation = 2;
+    // s.start = c;
+    // s.type = TSHAPE;
+    // setShip(p1,s);
+    // printBoard(p1);
+    
     printAllShipsTypes();
     printWarningMsg("Player 1: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
     scanf("%d",&random);
@@ -47,8 +59,6 @@ int main(int argc, char *argv[]){
         manualyPlanceShips(p2,lstOfShips);
     }
 
-    printBoard(p1);
-    printBoard(p2);
     fire(p1,p2);
 
     return 0;
