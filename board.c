@@ -139,7 +139,7 @@ void printBoard(Board *b){
 
 void printAllShipsTypes(){
 
-    printf("Name: Carrier: \t Battleship: \t Cruiser:\tSubmarine:\tDestroyer:\tTShape: \n");
+    printf("\nName: Carrier: \t Battleship: \t Cruiser:\tSubmarine:\tDestroyer:\tTShape: \n");
     // printf("Size:    5  \t     4  \t    3  \t\t   3  \t\t    3  \t\t   5  \n");
     printf("Code:    %d  \t     %d  \t    %d \t\t   %d \t\t    %d \t\t   %d\n\n",CARRIER,BATTLESHIP,CRUISER,SUBMARINE,DESTROYER,TSHAPE);
     printf("\t " KCYN "C\t     B\t\t    R\t\t   S\t\t    D\t\t" KRED " T " KCYN "T T\n");
