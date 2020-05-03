@@ -216,7 +216,7 @@ bool isValidPos(Board* b, Ship ship){
         if(ship.start.col + (TSHAPE_SIZE - 1) >= b->colSize || ship.start.row + (TSHAPE_SIZE - 1) >= b->rowSize){
             return false;
         }
-        
+
         switch (ship.rotation)
         {
         case ROTATION_0:
@@ -234,23 +234,25 @@ bool isValidPos(Board* b, Ship ship){
             break;
         case ROTATION_90:
             for(int i=0;i<ship.length;i++){
-                if(b->board[ship.start.row - i][ship.start.col].shipType != -1 || (ship.start.row - i) >= 0)
+              printf("row-i %d \n",ship.start.row-i);
+                if(b->board[ship.start.row - i][ship.start.col].shipType != -1 && (ship.start.row - i) < 0)
                     return false;
             }
             mid = ship.start.row - 1;
             for(int i=0;i<ship.length;i++){
-                if(b->board[mid][ship.start.col - i].shipType != -1 || (ship.start.col - i) >= 0)
+              printf("col-i %d \n",ship.start.col-i);
+                if(b->board[mid][ship.start.col - i].shipType != -1 && (ship.start.col - i) < 0)
                     return false;
             }
         break;
         case ROTATION_180:
             for(int i=0;i < ship.length;i++){
-                if(b->board[ship.start.row][ship.start.col - i].shipType != -1 || (ship.start.col - i) >= 0)
+                if(b->board[ship.start.row][ship.start.col - i].shipType != -1 && (ship.start.col - i) < 0)
                     return false;
             }
             mid = ship.start.col - 1;
             for(int i=0;i < ship.length; i++){
-                if(b->board[ship.start.row - i][mid].shipType != -1 || (ship.start.row - i) >= 0)
+                if(b->board[ship.start.row - i][mid].shipType != -1 && (ship.start.row - i) < 0)
                     return false;
             }
             break;
@@ -667,7 +669,7 @@ int convertRotation(int rot){
 	if(rot == 270){
 		return ROTATION_270;
 	}
-    return 0;
+    return -1;
 }
 
 void fire(Board* p1board, Board* p2board){
@@ -681,14 +683,14 @@ void fire(Board* p1board, Board* p2board){
 			printWarningMsg("Player 1 is your turn!");
             printWarningMsg("Specify the coordinates of your shots:");
 			for(int i=0;i<3;i++){
-				printWarningMsgInt("Shot %d:" ,i+1);
+				printWarningMsgInt("Shot" ,i+1);
 				scanf("%d %d",&r,&c);
 				shot.row=r;
 				shot.col=c;
 				while(r<0 || c<0 ||  r>p1board->rowSize || c >= p1board->colSize){
 					printErrorMsg("That is an invalid Coordinate, please respect the board edges.");
 					printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
-					printWarningMsgInt("Shot %d:",i+1);
+					printWarningMsgInt("Shot",i+1);
 					scanf("%d %d",&r,&c);
                     shot.row=r;
                     shot.col=c;
@@ -696,14 +698,13 @@ void fire(Board* p1board, Board* p2board){
         while(p2board->board[r][c].wasHit == true){
             printErrorMsg("Coordinate already been used, please enter a new coordinate.");
             printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
-            printWarningMsgInt("Shot %d:" ,i+1);
+            printWarningMsgInt("Shot" ,i+1);
             scanf("%d %d",&r,&c);
             shot.row=r;
             shot.col=c;
         }
         if(p2board->board[r][c].shipType != -1 && p2board->board[r][c].wasHit == false && p2board->board[r][c].shipType != GOODSHOT){
-            printf("ENTROU NO IF OK\n");
-            p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
+            p1board->shotsFierd = newShot(p1board->shotsFierd,shot,true);
             p2board-> hp-- ;
             p2board->board[r][c].wasHit = true;
             p2board->board[r][c].shipType = GOODSHOT;
@@ -711,10 +712,11 @@ void fire(Board* p1board, Board* p2board){
                 printSuccessMsg("Congratulations , Player 1 won! ");
                 tmp=2;
             }
-            printBoard(p2board);
+            printBoard(p1board);
         }else{
+            p1board->shotsFierd = newShot(p1board->shotsFierd,shot,false);
             p2board->board[r][c].shipType = WATERSHOT;
-            printBoard(p2board);
+            printBoard(p1board);
         }
 			}
 			turn=2;
@@ -726,14 +728,14 @@ void fire(Board* p1board, Board* p2board){
         printWarningMsg("Player 2 is your turn!");
         printWarningMsg("Specify the coordinates of your shots:");
         for(int i=0;i<3;i++){
-            printWarningMsgInt("Shot %d:" ,i+1);
+            printWarningMsgInt("Shot" ,i+1);
             scanf("%d %d",&r,&c);
             shot.row=r;
             shot.col=c;
             while(r<0 || c<0 ||  r>p2board->rowSize || c >= p2board->colSize ){
                 printErrorMsg("That is an invalid Coordinate, please respect the board edges.");
                 printWarningMsg("Player 2 introduce one shot coordinates (R C):\n");
-                printWarningMsgInt("Shot %d:" ,i+1);
+                printWarningMsgInt("Shot" ,i+1);
                 scanf("%d %d",&r,&c);
             shot.row=r;
             shot.col=c;
@@ -741,13 +743,13 @@ void fire(Board* p1board, Board* p2board){
         while(p1board->board[r][c].wasHit == true){
             printErrorMsg("Coordinate already been used, please enter a new coordinate.");
             printWarningMsg("Player 2 introduce one shot coordinates (R C):\n");
-            printWarningMsgInt("Shot %d:" ,i+1);
+            printWarningMsgInt("Shot" ,i+1);
             scanf("%d %d",&r,&c);
             shot.row=r;
             shot.col=c;
         }
-        if(p1board->board[r][c].shipType != -1 && p1board->board[r][c].wasHit == false && p1board->board[r][c].shipType != 6){
-            p1board->shotsFierd = newShot(p1board->shotsFierd,shot,true);
+        if(p1board->board[r][c].shipType != -1 && p1board->board[r][c].wasHit == false && p1board->board[r][c].shipType != GOODSHOT){
+            p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
             p1board-> hp-- ;
             p1board->board[r][c].shipType = 6;
             p1board->board[r][c].wasHit = true;
@@ -755,12 +757,13 @@ void fire(Board* p1board, Board* p2board){
                 printSuccessMsg("Congratulations , Player 2 won! ");
                 tmp=2;
             }
-            printBoard(p1board);
+            printBoard(p2board);
         }else{
+            p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
             p1board->board[r][c].shipType = WATERSHOT;
-            printBoard(p1board);
+            printBoard(p2board);
         }
-        
+
         }
             turn=1;
         }
