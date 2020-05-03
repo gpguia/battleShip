@@ -708,7 +708,7 @@ void fire(Board* p1board, Board* p2board){
             if(p2board->hp == 0){
                 printSuccessMsg("Congratulations , Player 1 won! ");
                 printBoard(p2board);
-                exit(0);
+                return;
             }
             printShots(p1board->shotsFierd);
         }else{
@@ -756,7 +756,7 @@ void fire(Board* p1board, Board* p2board){
             if(p1board->hp == 0){
                 printSuccessMsg("Congratulations , Player 2 won! ");
                 printBoard(p1board);
-                exit(0);
+                return;
             }
             printShots(p2board->shotsFierd);
         }else{
@@ -813,4 +813,12 @@ void printShots(Shots* lst){
         }
     }
     printf(KNRM "\n");
+}
+
+void clearBoard(Board* b){
+    for(int i=0; i<b->rowSize; i++){
+        free(b->board[i]);
+    }
+    clearShots(b->shotsFierd);
+    free(b);
 }
