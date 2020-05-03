@@ -700,19 +700,20 @@ void fire(Board* p1board, Board* p2board){
             shot.row=r;
             shot.col=c;
         }
-        if(p2board->board[r][c].shipType != -1 && p2board->board[r][c].wasHit == false && p2board->board[r][c].shipType != GOODSHOT){
+        if(p2board->board[r][c].shipType != -1 && p2board->board[r][c].wasHit == false){
             p1board->shotsFierd = newShot(p1board->shotsFierd,shot,true);
             p2board-> hp-- ;
             p2board->board[r][c].wasHit = true;
             p2board->board[r][c].shipType = GOODSHOT;
             if(p2board->hp == 0){
                 printSuccessMsg("Congratulations , Player 1 won! ");
-                tmp=2;
+                exit(0);
             }
             printShots(p1board->shotsFierd);
         }else{
             p1board->shotsFierd = newShot(p1board->shotsFierd,shot,false);
             p2board->board[r][c].shipType = WATERSHOT;
+            p2board->board[r][c].wasHit = true;
             printShots(p1board->shotsFierd);
         }
 			}
@@ -721,7 +722,7 @@ void fire(Board* p1board, Board* p2board){
 
     if(turn == 2){
         clearScreen();
-        printWarningMsg("\t\t\t\t\t\t\t#### Board Player 1 ###\n\n");
+        printWarningMsg("\t\t\t\t\t\t\t#### Board Player 2 ###\n\n");
         printBoard(p2board);
         printWarningMsg("\n\nPlayer 2 is your turn!");
         printWarningMsg("Specify the coordinates of your shots:");
@@ -746,20 +747,21 @@ void fire(Board* p1board, Board* p2board){
             shot.row=r;
             shot.col=c;
         }
-        if(p1board->board[r][c].shipType != -1 && p1board->board[r][c].wasHit == false && p1board->board[r][c].shipType != GOODSHOT){
+        if(p1board->board[r][c].shipType != -1 && p1board->board[r][c].wasHit == false){
             p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
             p1board-> hp-- ;
             p1board->board[r][c].shipType = 6;
             p1board->board[r][c].wasHit = true;
             if(p1board->hp == 0){
                 printSuccessMsg("Congratulations , Player 2 won! ");
-                tmp=2;
+                exit(0);
             }
             printShots(p2board->shotsFierd);
         }else{
             p2board->shotsFierd = newShot(p2board->shotsFierd,shot,true);
             p1board->board[r][c].shipType = WATERSHOT;
-            printShots(p1board->shotsFierd);
+            p1board->board[r][c].wasHit = true;
+            printShots(p2board->shotsFierd);
         }
 
         }
