@@ -707,6 +707,7 @@ void fire(Board* p1board, Board* p2board){
             p2board->board[r][c].shipType = GOODSHOT;
             if(p2board->hp == 0){
                 printSuccessMsg("Congratulations , Player 1 won! ");
+                printBoard(p2board);
                 exit(0);
             }
             printShots(p1board->shotsFierd);
@@ -754,6 +755,7 @@ void fire(Board* p1board, Board* p2board){
             p1board->board[r][c].wasHit = true;
             if(p1board->hp == 0){
                 printSuccessMsg("Congratulations , Player 2 won! ");
+                printBoard(p1board);
                 exit(0);
             }
             printShots(p2board->shotsFierd);
