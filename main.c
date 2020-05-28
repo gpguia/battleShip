@@ -1,5 +1,8 @@
-#include "board.h"
 
+#define QT
+
+#ifdef MATRIX
+#include "board.h"
 int main(int argc, char *argv[]){
     
     Board *p1, *p2;
@@ -55,3 +58,29 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
+#endif
+
+#ifdef QT
+
+#include "quadtree.h"
+
+int main(int argc, char *argv[]){
+    
+    QD_NODE *p1, *p2;
+
+    if(checkArgs(argc, argv)){
+        p1 = newBoard(atoi(argv[1]), atoi(argv[2]));
+        p2 = newBoard(atoi(argv[1]), atoi(argv[2]));
+    }else{
+        int col, row;
+        printWarningMsg("Specify the board size! Minimum size:20x20 ; Maximum size:40x40");
+        printWarningMsg("Format of board sizes: X Y");
+        scanf("%d%d",&row,&col);
+        p1 = newBoard(atoi(argv[1]), atoi(argv[2]));
+        p2 = newBoard(atoi(argv[1]), atoi(argv[2]));
+    }
+    
+    
+    return 0;
+}
+#endif
