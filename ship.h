@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "shots.h"
 
 #define MAXNUMSHIPS 16
 #define CARRIER_SIZE 5
@@ -12,11 +12,6 @@
 #define ROTATION_180 2
 #define ROTATION_270 3
 
-typedef struct _Coordinate{
-    int row;
-    int col;
-}Coordinate;
-
 enum ShipType{
     CARRIER,  //0
     BATTLESHIP, //1
@@ -27,12 +22,6 @@ enum ShipType{
     GOODSHOT, //hit the target
     WATERSHOT
 };
-
-typedef struct _Shots{
-    Coordinate target;
-    bool isHit;
-    struct _Shots* next;
-} Shots;
 
 typedef struct _Cell{
     bool hasShip;
@@ -46,3 +35,7 @@ typedef struct _Ship{
     Coordinate start;
     int rotation;
 } Ship;
+
+
+int* selectShips(int row, int col);
+void printAllShipsTypes();

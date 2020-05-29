@@ -6,8 +6,6 @@
 #include <unistd.h>
 #include <ctype.h>
 
-
-
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
@@ -16,6 +14,12 @@
 #define KMAG  "\x1B[35m"
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
+
+
+typedef struct _Coordinate{
+    int row;
+    int col;
+}Coordinate;
 
 bool checkArgs(int argc, char *argv[]);
 
