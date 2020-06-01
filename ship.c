@@ -53,3 +53,35 @@ int* selectShips(int row, int col){
 
     return lstOfShips;
 }
+
+void sumShipSizesAndSetHP(int *lstOfShips, int *p1Hp, int *p2Hp){
+    for(int i=0;i<6;i++){
+        switch (i)
+        {
+        case CARRIER:
+            *p1Hp += CARRIER_SIZE * lstOfShips[i];
+            *p2Hp += CARRIER_SIZE * lstOfShips[i];
+            break;
+        case BATTLESHIP:
+            *p1Hp += BATTLESHIP_SIZE * lstOfShips[i];
+            *p2Hp += BATTLESHIP_SIZE * lstOfShips[i];
+            break;
+        case CRUISER:
+            *p1Hp += CRUSIER_SIZE * lstOfShips[i];
+            *p2Hp += CRUSIER_SIZE * lstOfShips[i];
+            break;
+        case SUBMARINE:
+            *p1Hp += SUBMARINE_SIZE * lstOfShips[i];
+            *p2Hp += SUBMARINE_SIZE * lstOfShips[i];
+            break;
+        case DESTROYER:
+            *p1Hp += DESTROYER_SIZE * lstOfShips[i];
+            *p2Hp += DESTROYER_SIZE * lstOfShips[i];
+            break;
+        case TSHAPE:
+            *p1Hp += (TSHAPE_SIZE + 2) * lstOfShips[i];
+            *p2Hp += (TSHAPE_SIZE + 2) * lstOfShips[i];
+            break;
+        }
+    }
+}

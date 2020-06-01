@@ -1,14 +1,15 @@
 #include "quadtree.h"
 
+int rowSize = 0;
+int colSize = 0;
+
+
 QD_NODE *newQuadLeaf(Coordinate topL, Coordinate botR){
     QD_NODE *b = (QD_NODE*)malloc(sizeof(QD_NODE));
     b->type = QDLEAF;
     b->topLeft = topL;
     b->botRight = botR;
     
-    //As a LeafNode we set all the other quadrants as NULL
-
-    //maybe not needed since is started as a leaf
     b->node.leaf.cords = make_point(-1,-1);
     b->node.leaf.cell.hasShip = false;
     b->node.leaf.cell.shipType = -1;
@@ -23,8 +24,9 @@ QD_NODE *newQuadNode(Coordinate topL, Coordinate botR){
     b->botRight = botR;
     Coordinate c1, c2;
     
-    int halfX = (b->topLeft.row + b->botRight.row) / 2;
-    int halfY = (b->topLeft.col + b->botRight.col) / 2;
+
+    int halfX = (b->topLeft.row + b->botRight.row + 1) / 2;
+    int halfY = (b->topLeft.col + b->botRight.col + 1) / 2;
 
     for(int i=0;i<4;i++){
         if(i == NW){
@@ -46,30 +48,22 @@ QD_NODE *newQuadNode(Coordinate topL, Coordinate botR){
     return b;
 }
 
-
-bool isValidPos(QD_NODE *b, Coordinate p){
-    if(b == NULL)
-        return false;
-    
-    QD_NODE* aux = search(b, p);
-    if(aux == NULL)
-        return true;
-    
-    return false;
-}
-
 int getQuadrant(QD_NODE *b, Coordinate p){
-    int halfX = (b->topLeft.row + b->botRight.row) / 2;
-    int halfY = (b->topLeft.col + b->botRight.col) / 2;
+    int halfX = (b->topLeft.row + b->botRight.row + 1) / 2;
+    int halfY = (b->topLeft.col + b->botRight.col + 1) / 2; 
 
-    if(halfX >= p.row){
-        if(halfY >= p.col){
+    // printf("halfX: %d\n",halfX);
+    // printf("halfY: %d\n",halfY);
+    // printf("p.row: %d \t p.col: %d\n",p.row, p.col);
+
+    if(halfX > p.row){
+        if(halfY > p.col){
             return SW;
         }else{
             return NW;
         }
     }else{
-        if(halfY >= p.col){
+        if(halfY > p.col){
             return SE;
         }else{
             return NE;
@@ -79,7 +73,6 @@ int getQuadrant(QD_NODE *b, Coordinate p){
 
 QD_NODE *insertCords(QD_NODE *b, Coordinate p, int shipType){
     if(b == NULL){
-        
         return b;
     }
     
@@ -104,19 +97,14 @@ QD_NODE *insertCords(QD_NODE *b, Coordinate p, int shipType){
         node = insertCords(node, p, shipType);
         return node;
     }
-    
+
+
     int quad = getQuadrant(b, p);
+    // printf("%d\n", quad);
     b->node.quadrants[quad] = insertCords(b->node.quadrants[quad], p, shipType);
     
     return b;
 }
-
-bool inBoundary(QD_NODE *b, Coordinate p){
-    if(b->topLeft.row > p.row || b->topLeft.col < p.col || b->botRight.row < p.row || b->botRight.col > p.col)
-        return false;
-    return true;
-}
-
 
 QD_NODE *search(QD_NODE *b, Coordinate p){
     
@@ -133,40 +121,6 @@ QD_NODE *search(QD_NODE *b, Coordinate p){
             return b;
         }
     }
-
-    // if(!inBoundary(b,p)){
-    //     return NULL;
-    // }
-    
-    
-    // int halfX = (b->topLeft.row + b->botRight.row) / 2;
-    // int halfY = (b->topLeft.col + b->botRight.col) / 2;
-
-    // if(halfX >= p.row){
-    //     if(halfY >= p.col){
-    //         if(b->node.quadrants[SW] == NULL){
-    //             return NULL;
-    //         }
-    //         return search(b->node.quadrants[SW], p);
-    //     }else{
-    //         if(b->node.quadrants[NW] == NULL){
-    //             return NULL;
-    //         }
-    //         return search(b->node.quadrants[NW], p);
-    //     }
-    // }else{
-    //     if(halfY >= p.col){
-    //         if(b->node.quadrants[SE] == NULL){
-    //             return NULL;
-    //         }
-    //         return search(b->node.quadrants[SE], p);
-    //     }else{
-    //         if(b->node.quadrants[NE] == NULL){
-    //             return NULL;
-    //         }
-    //         return search(b->node.quadrants[NE], p);
-    //     }
-    // }
     return NULL;
 }
 
@@ -179,49 +133,17 @@ Coordinate make_point (int x, int y){
 }
 
 
-void sumShipSizesAndSetHP(int *lstOfShips, int *p1Hp, int *p2Hp){
-    for(int i=0;i<6;i++){
-        switch (i)
-        {
-        case CARRIER:
-            *p1Hp += CARRIER_SIZE * lstOfShips[i];
-            *p2Hp += CARRIER_SIZE * lstOfShips[i];
-            break;
-        case BATTLESHIP:
-            *p1Hp += BATTLESHIP_SIZE * lstOfShips[i];
-            *p2Hp += BATTLESHIP_SIZE * lstOfShips[i];
-            break;
-        case CRUISER:
-            *p1Hp += CRUSIER_SIZE * lstOfShips[i];
-            *p2Hp += CRUSIER_SIZE * lstOfShips[i];
-            break;
-        case SUBMARINE:
-            *p1Hp += SUBMARINE_SIZE * lstOfShips[i];
-            *p2Hp += SUBMARINE_SIZE * lstOfShips[i];
-            break;
-        case DESTROYER:
-            *p1Hp += DESTROYER_SIZE * lstOfShips[i];
-            *p2Hp += DESTROYER_SIZE * lstOfShips[i];
-            break;
-        case TSHAPE:
-            *p1Hp += (TSHAPE_SIZE + 2) * lstOfShips[i];
-            *p2Hp += (TSHAPE_SIZE + 2) * lstOfShips[i];
-            break;
-        }
-    }
-}
-
-void printTree(QD_NODE *b, int x, int y){
+void printTree(QD_NODE *b){
     QD_NODE *aux = NULL;
     Coordinate p;
-    for(int i=0 ;i < x; i++){
+    for(int i=0 ;i < rowSize; i++){
 		if(i <= 9){
             printf(KNRM "\t %d|",i);
         }else{
             printf(KNRM "\t%d|",i);
         }
 
-        for(int j=0; j < y ;j++){
+        for(int j=0; j < colSize; j++){
             p = make_point(i,j);
             aux = search(b, p);
             if(aux == NULL){
@@ -272,11 +194,370 @@ void printTree(QD_NODE *b, int x, int y){
     }
 
     printf("\t   ");
-	for(int k=0;k < y;k++){
+	for(int k=0;k < colSize; k++){
 		if(k <=9){
             printf(KNRM "  %d  |",k);
         }else{
             printf(KNRM "  %d |",k);
         }
 	}
+}
+
+QD_NODE *randomPlaceShips(QD_NODE *b, int *lstOfShips){
+    Ship s;
+    Coordinate c;
+    struct timespec ts;
+    QD_NODE *aux;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    srand((time_t)ts.tv_nsec);
+    bool isNotOnBoard = true;
+
+
+    for(int i=0;i<6;i++){
+        switch (i)
+        {
+        case CARRIER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = CARRIER_SIZE;
+                s.type = CARRIER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (rowSize - CARRIER_SIZE + 1));
+                    s.start.col = (rand() % (colSize - CARRIER_SIZE + 1));
+                    aux = setShip(b,s);
+                    if(aux != NULL){
+                        b = aux;
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case BATTLESHIP:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = BATTLESHIP_SIZE;
+                s.type = BATTLESHIP;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (rowSize - BATTLESHIP_SIZE + 1));
+                    s.start.col = (rand() % (colSize - BATTLESHIP_SIZE + 1));
+                    aux = setShip(b,s);
+                    if(aux != NULL){
+                        b = aux;
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case CRUISER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = CRUSIER_SIZE;
+                s.type = CRUISER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (rowSize - CRUSIER_SIZE + 1));
+                    s.start.col = (rand() % (colSize - CRUSIER_SIZE + 1));
+                    aux = setShip(b,s);
+                    if(aux != NULL){
+                        b = aux;
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case SUBMARINE:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = SUBMARINE_SIZE;
+                s.type = SUBMARINE;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (rowSize - SUBMARINE_SIZE + 1));
+                    s.start.col = (rand() % (colSize - SUBMARINE_SIZE + 1));
+                    aux = setShip(b,s);
+                    if(aux != NULL){
+                        b = aux;
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case DESTROYER:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = DESTROYER_SIZE;
+                s.type = DESTROYER;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (rowSize - DESTROYER_SIZE + 1));
+                    s.start.col = (rand() % (colSize - DESTROYER_SIZE + 1));
+                    aux = setShip(b,s);
+                    if(aux != NULL){
+                        b = aux;
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        case TSHAPE:
+            for(int k=0;k<lstOfShips[i];k++){
+                s.length = TSHAPE_SIZE;
+                s.type = TSHAPE;
+                while(isNotOnBoard){
+                    s.rotation = (rand() % 4);
+                    s.start.row = (rand() % (rowSize - TSHAPE_SIZE + 1));
+                    s.start.col = (rand() % (colSize - DESTROYER_SIZE + 1));
+                    aux = setShip(b,s);
+                    if(aux != NULL){
+                        b = aux;
+                        isNotOnBoard = false;
+                    }
+                }
+                isNotOnBoard = true;
+            }
+            break;
+        }
+    }
+
+    return b;
+}
+
+bool isValidPos(QD_NODE *b, Ship ship){
+    QD_NODE *aux;
+    if(ship.start.col < 0 || ship.start.row < 0 || ship.start.row >= rowSize || ship.start.col >= colSize){
+        return false;
+    }
+
+    if(ship.rotation != ROTATION_0 && ship.rotation != ROTATION_180 && ship.rotation != ROTATION_270 && ship.rotation != ROTATION_90){
+        return false;
+    }
+
+    if(ship.type == TSHAPE){
+        int mid;
+        if(ship.start.col + (TSHAPE_SIZE - 1) >= colSize || ship.start.row + (TSHAPE_SIZE - 1) >= rowSize){
+            return false;
+        }
+
+        switch (ship.rotation)
+        {
+        case ROTATION_0:
+            for(int i=0;i < ship.length; i++){
+                aux = search(b, make_point(ship.start.row, ship.start.col + i));
+                if(aux != NULL){
+                    return false;
+                }
+                if((ship.start.col + i) > colSize){
+                    return false;
+                }
+            }
+            mid = ship.start.col + 1;
+            for(int i=0;i < ship.length;i++){
+                aux = search(b, make_point(ship.start.row + i, mid));
+                if(aux != NULL)
+                    return false;
+                if(ship.start.row + i > rowSize)
+                    return false;
+            }
+            break;
+        case ROTATION_90:
+            for(int i=0;i<ship.length;i++){
+                aux = search(b, make_point(ship.start.row - i, ship.start.col));
+                if(aux != NULL)
+                    return false;
+                if(ship.start.row - i < 0)
+                    return false;
+            }
+            mid = ship.start.row - 1;
+            for(int i=0;i<ship.length;i++){
+                aux = search(b, make_point(mid, ship.start.col - i));
+                if(aux != NULL)
+                    return false;
+                if(ship.start.col - i < 0)
+                    return false;
+            }
+        break;
+        case ROTATION_180:
+            for(int i=0;i < ship.length;i++){
+                aux = search(b, make_point(ship.start.row, ship.start.col - i));
+                if(aux != NULL)
+                    return false;
+                if(ship.start.col - i < 0)
+                    return false;
+            }
+            mid = ship.start.col - 1;
+            for(int i=0;i < ship.length; i++){
+                aux = search(b, make_point(ship.start.row - i, mid));
+                if(aux != NULL)
+                    return false;
+                if(ship.start.row - i < 0)
+                    return false;
+            }
+            break;
+        case ROTATION_270:
+            for(int i=0;i < ship.length; i++){
+                aux = search(b, make_point(ship.start.row + i, ship.start.col));
+                if(aux != NULL){
+                    deBug("NULL");
+                    return false;
+                }
+                if((ship.start.row + i) > rowSize){
+                    deBug("ROWSIZE");
+                    return false;
+                }
+            }
+            mid = ship.start.row + 1;
+            for(int i=0;i < ship.length;i++){
+                aux = search(b, make_point(mid, ship.start.col + i));
+                if(aux != NULL) 
+                    return false;
+                if(ship.start.col + i > colSize)
+                    return false;
+            }
+            break;
+        }
+    }
+
+    switch (ship.rotation){
+    case ROTATION_0:
+        if(ship.start.col + ship.length > colSize){
+            return false;
+        }
+        for(int i=0;i<ship.length;i++){
+            aux = search(b, make_point(ship.start.row, ship.start.col + i));
+            if(aux != NULL){
+                return false;
+            }
+        }
+        break;
+    case ROTATION_180:
+        if(ship.start.col - ship.length < -1)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            aux = search(b, make_point(ship.start.row, ship.start.col - i));
+            if(aux != NULL)
+                return false;
+        }
+        break;
+    case ROTATION_90:
+        if(ship.start.row - ship.length < -1)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            aux = search(b, make_point(ship.start.row - i, ship.start.col));
+            if(aux != NULL)
+                return false;
+        }
+        break;
+    case ROTATION_270:
+        if(ship.start.row + ship.length > rowSize)
+            return false;
+        for(int i=0;i<ship.length;i++){
+            aux = search(b , make_point(ship.start.row + i, ship.start.col));
+            if(aux != NULL)
+                return false;
+        }
+        break;
+    }
+
+    return true;
+}
+
+QD_NODE *setShip(QD_NODE *b, Ship ship){
+    if(!isValidPos(b,ship)){
+        return NULL;
+    }
+
+    if(ship.type == TSHAPE){
+        int mid;
+        switch (ship.rotation)
+        {
+        case ROTATION_0:
+            for(int i=0;i<ship.length;i++){
+                b = insertCords(b, make_point(ship.start.row, ship.start.col + i), ship.type);
+                // b->board[ship.start.row][ship.start.col + i].shipType = ship.type;
+                // b->board[ship.start.row][ship.start.col + i].hasShip = true;
+            }
+            mid = ship.start.col + 1;
+            for(int i=0;i<ship.length;i++){
+                b = insertCords(b, make_point(ship.start.row + i, mid), ship.type);
+                // b->board[ship.start.row + i][mid].shipType = ship.type;
+                // b->board[ship.start.row + i][mid].hasShip = true;
+            }
+            break;
+        case ROTATION_90:
+            for(int i=0;i<ship.length;i++){
+                b = insertCords(b, make_point(ship.start.row - i, ship.start.col), ship.type);
+                // b->board[ship.start.row - i][ship.start.col].shipType = ship.type;
+                // b->board[ship.start.row - i][ship.start.col].hasShip = true;
+            }
+            mid = ship.start.row - 1;
+            for(int i=0;i<ship.length;i++){
+                b = insertCords(b, make_point(mid, ship.start.col - i), ship.type);
+                // b->board[mid][ship.start.col - i].shipType = ship.type;
+                // b->board[mid][ship.start.col - i].hasShip = true;
+            }
+            break;
+        case ROTATION_180:
+            for(int i=0;i < ship.length;i++){
+                b = insertCords(b, make_point(ship.start.row, ship.start.col - i), ship.type);
+                // b->board[ship.start.row][ship.start.col - i].shipType = ship.type;
+                // b->board[ship.start.row][ship.start.col - i].hasShip = true;
+            }
+            mid = ship.start.col - 1;
+            for(int i=0;i < ship.length; i++){
+                b = insertCords(b, make_point(ship.start.row - i, mid), ship.type);
+                // b->board[ship.start.row - i][mid].shipType = ship.type;
+                // b->board[ship.start.row - i][mid].hasShip = true;
+            }
+            break;
+        case ROTATION_270:
+            for(int i=0;i<ship.length;i++){
+                b = insertCords(b, make_point(ship.start.row + i, ship.start.col), ship.type);
+                printf("(X,Y): (%d,%d)\n", ship.start.row + i, ship.start.col);
+                // printTree(b);
+                // b->board[ship.start.row + i][ship.start.col].shipType = ship.type;
+                // b->board[ship.start.row + i][ship.start.col].hasShip = true;
+            }
+            mid = ship.start.row + 1;
+            for(int i=1;i<ship.length;i++){
+                b = insertCords(b, make_point(mid, ship.start.col + i), ship.type);
+                // b->board[mid][ship.start.col + i].shipType = ship.type;
+                // b->board[mid][ship.start.col + i].hasShip = true;
+            }
+            break;
+        }
+        return b;
+    }
+
+
+    switch (ship.rotation)
+    {
+    case ROTATION_0:
+        for(int i=0;i<ship.length;i++){
+            b = insertCords(b, make_point(ship.start.row, ship.start.col + i), ship.type);
+        }
+        break;
+    case ROTATION_270:
+        for(int j=0;j<ship.length;j++){
+            b = insertCords(b, make_point(ship.start.row + j, ship.start.col), ship.type);
+        }
+        break;
+    case ROTATION_180:
+        for(int i=0;i<ship.length;i++){
+            b = insertCords(b, make_point(ship.start.row, ship.start.col - i), ship.type);
+        }
+        break;
+    case ROTATION_90:
+        for(int j=0;j<ship.length;j++){
+            b = insertCords(b, make_point(ship.start.row - j, ship.start.col), ship.type);
+        }
+        break;
+    }
+    return b;
+}
+
+void setup(int row, int col){
+    rowSize = row;
+    colSize = col;
 }

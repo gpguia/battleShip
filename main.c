@@ -95,26 +95,39 @@ int main(int argc, char *argv[]){
         p1 = newQuadLeaf(c1,c2);
         p2 = newQuadLeaf(c1,c2);
     }
-    
+    setup(rowSize, colSize);
+
     lstOfShips = selectShips(rowSize,colSize);
-    sumShipSizesAndSetHP(lstOfShips, &p1Hp, &p2Hp);    
+    sumShipSizesAndSetHP(lstOfShips, &p1Hp, &p2Hp);
 
-    printTree(p1, rowSize, colSize);
+    printAllShipsTypes();
+    printWarningMsg("Player 1: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
+    scanf("%d",&random);
+    while(random != 1 && random != 0){
+		printf("\n" KNRM "Randomly set ships ? (" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
+		scanf("%d",&random);
+	}
 
-    // printAllShipsTypes();
-    // printWarningMsg("Player 1: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
-    // scanf("%d",&random);
-    // while(random != 1 && random != 0){
-	// 	printf("\n" KNRM "Randomly set ships ? (" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
-	// 	scanf("%d",&random);
-	// }
+	if(random == 1){
+		p1 = randomPlaceShips(p1,lstOfShips);
+	}else{
+        // manualyPlanceShips(p1,lstOfShips);
+    }
 
-	// if(random == 1){
-	// 	randomPlaceShips(p1,lstOfShips);
-	// }else{
-    //     manualyPlanceShips(p1,lstOfShips);
-    // }
+    Ship s;
+    s.type = TSHAPE;
+    s.length = TSHAPE_SIZE;
+    s.rotation = ROTATION_270;
+    s.start = make_point(0,12);
 
+    QD_NODE *aux = setShip(p1, s);
+    if(aux == NULL){
+        deBug("ERROR");
+    }else{
+        p1 = aux;
+    }
+
+    printTree(p1);
     // printWarningMsg("Player 2: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
     // scanf("%d",&random);
     // while(random != 1 && random != 0){
@@ -125,7 +138,7 @@ int main(int argc, char *argv[]){
     // if(random == 1){
 	// 	randomPlaceShips(p2,lstOfShips);
 	// }else{
-    //     manualyPlanceShips(p2,lstOfShips);
+    //     // manualyPlanceShips(p2,lstOfShips);
     // }
 
     return 0;

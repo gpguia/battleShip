@@ -39,3 +39,4 @@ typedef struct _Ship{
 
 int* selectShips(int row, int col);
 void printAllShipsTypes();
+void sumShipSizesAndSetHP(int *lstOfShips, int* p1Hp, int *p2Hp);

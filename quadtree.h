@@ -28,10 +28,11 @@ QD_NODE *search(QD_NODE *b, Coordinate p);
 QD_NODE *insertCords(QD_NODE *b, Coordinate p, int shipType);
 Coordinate make_point(int x,int y); // que constrói o ponto (x,y) e o retorna;
 bool inBoundary(QD_NODE *b, Coordinate p);
-bool isValidPos(QD_NODE *b, Coordinate p);
+bool isValidPos(QD_NODE *b, Ship s);
+QD_NODE *setShip(QD_NODE *b, Ship ship);
 
-void sumShipSizesAndSetHP(int *lstOfShips, int* p1Hp, int *p2Hp);
-void randomPlaceShips(QD_NODE *b, int *lst);
-
-void printTree(QD_NODE *b, int x, int y);
+void printTree(QD_NODE *b);
 int getQuadrant(QD_NODE *b, Coordinate p);
+
+QD_NODE *randomPlaceShips(QD_NODE *b, int *lstOfShips);
+void setup(int row, int col);
