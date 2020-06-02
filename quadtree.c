@@ -767,7 +767,7 @@ void fire(QD_NODE* p1board, QD_NODE* p2board, int *p1Hp, int *p2Hp){
                 if(aux != NULL){ //If aux != NULL then exists coords in quad tree so there is a boat
                     if(aux->node.leaf.cell.wasHit == false){ // coords was not hit yet
                         p1Shots = newShot(p1Shots, shot, true);
-                        *p2Hp--;
+                        *p2Hp = *p2Hp - 1;
                         aux->node.leaf.cell.wasHit = true;
                         aux->node.leaf.cell.shipType = GOODSHOT;
                         if(*p2Hp == 0){
@@ -804,7 +804,7 @@ void fire(QD_NODE* p1board, QD_NODE* p2board, int *p1Hp, int *p2Hp){
                 if(aux != NULL){ //If aux != NULL then exists coords in quad tree so there is a boat
                     if(aux->node.leaf.cell.wasHit == false){ // coords was not hit yet
                         p2Shots = newShot(p2Shots, shot, true);
-                        *p1Hp--;
+                        *p1Hp = *p1Hp - 1;
                         aux->node.leaf.cell.wasHit = true;
                         aux->node.leaf.cell.shipType = GOODSHOT;
                         if(*p1Hp == 0){
