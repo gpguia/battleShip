@@ -52,10 +52,6 @@ int getQuadrant(QD_NODE *b, Coordinate p){
     int halfX = (b->topLeft.row + b->botRight.row + 1) / 2;
     int halfY = (b->topLeft.col + b->botRight.col + 1) / 2; 
 
-    // printf("halfX: %d\n",halfX);
-    // printf("halfY: %d\n",halfY);
-    // printf("p.row: %d \t p.col: %d\n",p.row, p.col);
-
     if(halfX > p.row){
         if(halfY > p.col){
             return SW;
@@ -100,7 +96,6 @@ QD_NODE *insertCords(QD_NODE *b, Coordinate p, int shipType){
 
 
     int quad = getQuadrant(b, p);
-    // printf("%d\n", quad);
     b->node.quadrants[quad] = insertCords(b->node.quadrants[quad], p, shipType);
     
     return b;
@@ -320,7 +315,6 @@ QD_NODE *randomPlaceShips(QD_NODE *b, int *lstOfShips){
             break;
         }
     }
-
     return b;
 }
 
@@ -399,11 +393,9 @@ bool isValidPos(QD_NODE *b, Ship ship){
             for(int i=0;i < ship.length; i++){
                 aux = search(b, make_point(ship.start.row + i, ship.start.col));
                 if(aux != NULL){
-                    deBug("NULL");
                     return false;
                 }
                 if((ship.start.row + i) > rowSize){
-                    deBug("ROWSIZE");
                     return false;
                 }
             }
@@ -475,55 +467,38 @@ QD_NODE *setShip(QD_NODE *b, Ship ship){
         case ROTATION_0:
             for(int i=0;i<ship.length;i++){
                 b = insertCords(b, make_point(ship.start.row, ship.start.col + i), ship.type);
-                // b->board[ship.start.row][ship.start.col + i].shipType = ship.type;
-                // b->board[ship.start.row][ship.start.col + i].hasShip = true;
             }
             mid = ship.start.col + 1;
             for(int i=0;i<ship.length;i++){
                 b = insertCords(b, make_point(ship.start.row + i, mid), ship.type);
-                // b->board[ship.start.row + i][mid].shipType = ship.type;
-                // b->board[ship.start.row + i][mid].hasShip = true;
             }
             break;
         case ROTATION_90:
             for(int i=0;i<ship.length;i++){
                 b = insertCords(b, make_point(ship.start.row - i, ship.start.col), ship.type);
-                // b->board[ship.start.row - i][ship.start.col].shipType = ship.type;
-                // b->board[ship.start.row - i][ship.start.col].hasShip = true;
             }
             mid = ship.start.row - 1;
             for(int i=0;i<ship.length;i++){
                 b = insertCords(b, make_point(mid, ship.start.col - i), ship.type);
-                // b->board[mid][ship.start.col - i].shipType = ship.type;
-                // b->board[mid][ship.start.col - i].hasShip = true;
             }
             break;
         case ROTATION_180:
             for(int i=0;i < ship.length;i++){
                 b = insertCords(b, make_point(ship.start.row, ship.start.col - i), ship.type);
-                // b->board[ship.start.row][ship.start.col - i].shipType = ship.type;
-                // b->board[ship.start.row][ship.start.col - i].hasShip = true;
             }
             mid = ship.start.col - 1;
             for(int i=0;i < ship.length; i++){
                 b = insertCords(b, make_point(ship.start.row - i, mid), ship.type);
-                // b->board[ship.start.row - i][mid].shipType = ship.type;
-                // b->board[ship.start.row - i][mid].hasShip = true;
             }
             break;
         case ROTATION_270:
             for(int i=0;i<ship.length;i++){
                 b = insertCords(b, make_point(ship.start.row + i, ship.start.col), ship.type);
                 printf("(X,Y): (%d,%d)\n", ship.start.row + i, ship.start.col);
-                // printTree(b);
-                // b->board[ship.start.row + i][ship.start.col].shipType = ship.type;
-                // b->board[ship.start.row + i][ship.start.col].hasShip = true;
             }
             mid = ship.start.row + 1;
             for(int i=1;i<ship.length;i++){
                 b = insertCords(b, make_point(mid, ship.start.col + i), ship.type);
-                // b->board[mid][ship.start.col + i].shipType = ship.type;
-                // b->board[mid][ship.start.col + i].hasShip = true;
             }
             break;
         }
@@ -560,4 +535,291 @@ QD_NODE *setShip(QD_NODE *b, Ship ship){
 void setup(int row, int col){
     rowSize = row;
     colSize = col;
+}
+
+QD_NODE *manualPlaceShips(QD_NODE *b, int *lstOfShips){
+    Ship s;
+    Coordinate c;
+    QD_NODE *aux;
+    int r,col,rot;
+	for(int i=0 ; i < 6 ; i++){
+		switch(i){
+			case CARRIER:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = CARRIER_SIZE;
+                    s.type = CARRIER;
+                    clearScreen();
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Carrier ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    aux = setShip(b,s);
+                    while(aux == NULL){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Carrier ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                        aux = setShip(b,s);
+                    }
+                    b = aux;
+                printTree(b);
+                }
+			break;
+			case BATTLESHIP:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = BATTLESHIP_SIZE;
+                    s.type = BATTLESHIP;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Battleship ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    aux = setShip(b,s);
+                    while(aux == NULL){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Battleship ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                        aux = setShip(b,s);
+                    }
+                    b = aux;
+                    printTree(b);
+                }
+			break;
+			case CRUISER:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = CRUSIER_SIZE;
+                    s.type = CRUISER;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Cruiser ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    aux = setShip(b,s);
+                    while(aux == NULL){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Cruiser ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                        aux = setShip(b,s);
+                    }
+                    b = aux;
+                    printTree(b);
+                }
+			break;
+			case SUBMARINE:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = SUBMARINE_SIZE;
+                    s.type = SUBMARINE;
+                    printWarningMsg("Specify the initial coordinates(row,col) of Submarine ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    aux = setShip(b,s);
+                    while(aux == NULL){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Submarine ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d",&r,&col,&rot);
+                        s.start.row = r;
+                        s.start.col = col;
+                        s.rotation = convertRotation(rot);
+                        aux = setShip(b,s);
+                    }
+                    b = aux;
+                    printTree(b);
+                }
+			break;
+			case DESTROYER:
+				for(int k=0;k<lstOfShips[i];k++){
+                    s.length = DESTROYER_SIZE;
+                    s.type = DESTROYER;
+                    printAllShipsTypes();
+                    printWarningMsg("Specify the initial coordinates(row,col) of Destroyer ship and your rotation. (eg 5 5 90)");
+                    scanf("%d %d %d",&r,&col,&rot);
+                    s.start.row = r;
+                    s.start.col = col;
+                    s.rotation = convertRotation(rot);
+                    aux = setShip(b,s);
+                    while(aux == NULL){
+                        clearScreen();
+                        printAllShipsTypes();
+                        printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                        printWarningMsg("Please specify news coordinates(row,col) of Destroyer ship and your rotation. (eg 5 5 90)");
+                        scanf("%d %d %d", &r, &col, &rot);
+                        s.start.row = r ;
+                        s.start.col = col ;
+                        s.rotation = convertRotation(rot);
+                        aux = setShip(b,s);
+                    }
+                    b = aux;
+                    printTree(b);
+                }
+			break;
+			case TSHAPE:
+        for(int k=0;k<lstOfShips[i];k++){
+            s.length = TSHAPE_SIZE;
+            s.type = TSHAPE;
+            printAllShipsTypes();
+            printWarningMsg("Specify the initial coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
+            scanf("%d %d %d",&r,&col,&rot);
+            s.start.row = r;
+            s.start.col = col;
+            s.rotation = convertRotation(rot);
+            aux = setShip(b,s);
+            while(aux == NULL){
+                clearScreen();
+                printAllShipsTypes();
+                printErrorMsg("Wrong coordinates or rotation. Pay attention to the dimensions of the board.");
+                printWarningMsg("Please specify news coordinates(row,col) of Tshape ship and your rotation. (eg 5 5 90)");
+                scanf("%d %d %d", &r, &col, &rot);
+                s.start.row = r ;
+                s.start.col = col ;
+                s.rotation = convertRotation(rot);
+                aux = setShip(b,s);
+            }
+            b = aux;
+            printTree(b);
+        }
+			break;
+		}
+	}
+    return b;
+}
+
+int convertRotation(int rot){
+	if(rot == 0){
+		return ROTATION_0;
+	}
+	if(rot == 90){
+		return ROTATION_90;
+	}
+	if(rot == 180){
+		return ROTATION_180;
+	}
+	if(rot == 270){
+		return ROTATION_270;
+	}
+    return -1;
+}
+
+void getValidShot(Coordinate *c){
+    while(c->row < 0 || c->col < 0 || c->row >= rowSize || c->col >= colSize){
+        printErrorMsg("That is an invalid Coordinate, please respect the board edges.");
+        printWarningMsg("Introduce one shot coordinates (R C):\n");
+        scanf("%d%d",&c->row,&c->col);
+    }
+}
+
+bool isInPreviousShots(Shots *lst, Coordinate c){
+    Shots *aux;
+    aux = searchShot(lst, c);
+    if(aux == NULL){
+        return false;
+    }
+    return true;
+}
+
+void fire(QD_NODE* p1board, QD_NODE* p2board, int *p1Hp, int *p2Hp){
+    QD_NODE *aux;
+    int turn = 1;
+    Coordinate shot;
+    int x, y;
+    Shots *p1Shots = NULL, *p2Shots = NULL, *shotsAux = NULL;
+    
+    while(true){
+        if(turn == 1){
+            clearScreen();
+            printWarningMsg("\t\t\t\t\t\t\t#### Board Player 1 ###\n\n");
+            printTree(p1board);
+            printWarningMsg("\n\nPlayer 1 is your turn!\n");
+            printWarningMsg("Specify the coordinates of your shots:");
+
+            for(int i=0; i<3; i++){
+                printWarningMsgInt("Shot" ,i+1);
+                scanf("%d%d", &shot.row, &shot.col);
+                getValidShot(&shot);
+                while(isInPreviousShots(p1Shots, shot)){
+                    printErrorMsg("Coordinate already been used, please enter a new coordinate.");
+                    printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
+                    scanf("%d%d",&shot.row, &shot.col);
+                    getValidShot(&shot);
+                }
+                aux = search(p2board, shot);
+                if(aux != NULL){ //If aux != NULL then exists coords in quad tree so there is a boat
+                    if(aux->node.leaf.cell.wasHit == false){ // coords was not hit yet
+                        p1Shots = newShot(p1Shots, shot, true);
+                        *p2Hp--;
+                        aux->node.leaf.cell.wasHit = true;
+                        aux->node.leaf.cell.shipType = GOODSHOT;
+                        if(*p2Hp == 0){
+                            printSuccessMsg("Congratulations , Player 1 won! ");
+                            printTree(p2board);
+                            return;
+                        }
+                        printShots(p1Shots);
+                    }
+                }else{//Did not found that coords, so it's a watershot
+                    p1Shots = newShot(p1Shots, shot, false);
+                    printShots(p1Shots);
+                }
+            }
+            turn = 2;
+        }else{ // PLAYER 2 TURN
+            clearScreen();
+            printWarningMsg("\t\t\t\t\t\t\t#### Board Player 2 ###\n\n");
+            printTree(p2board);
+            printWarningMsg("\n\nPlayer 2 is your turn!\n");
+            printWarningMsg("Specify the coordinates of your shots:");
+
+            for(int i=0; i<3; i++){
+                printWarningMsgInt("Shot" ,i+1);
+                scanf("%d%d", &shot.row, &shot.col);
+                getValidShot(&shot);
+                while(isInPreviousShots(p1Shots, shot)){
+                    printErrorMsg("Coordinate already been used, please enter a new coordinate.");
+                    printWarningMsg("Player 1 introduce one shot coordinates (R C):\n");
+                    scanf("%d%d",&shot.row, &shot.col);
+                    getValidShot(&shot);
+                }
+                aux = search(p1board, shot);
+                if(aux != NULL){ //If aux != NULL then exists coords in quad tree so there is a boat
+                    if(aux->node.leaf.cell.wasHit == false){ // coords was not hit yet
+                        p2Shots = newShot(p2Shots, shot, true);
+                        *p1Hp--;
+                        aux->node.leaf.cell.wasHit = true;
+                        aux->node.leaf.cell.shipType = GOODSHOT;
+                        if(*p1Hp == 0){
+                            printSuccessMsg("Congratulations , Player 1 won! ");
+                            printTree(p1board);
+                            return;
+                        }
+                        printShots(p2Shots);
+                    }
+                }else{//Did not found that coords, so it's a watershot
+                    p2Shots = newShot(p2Shots, shot, false);
+                    printShots(p2Shots);
+                }
+            }
+            turn = 1;
+        }
+    }
 }

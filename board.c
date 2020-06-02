@@ -444,7 +444,6 @@ void randomPlaceShips(Board *b, int* lstOfShips){
 }
 
 void manualyPlanceShips(Board* b, int* lstOfShips){
-
 	Ship s;
     Coordinate c;
     int r,col,rot;

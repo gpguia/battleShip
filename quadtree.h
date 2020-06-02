@@ -35,4 +35,10 @@ void printTree(QD_NODE *b);
 int getQuadrant(QD_NODE *b, Coordinate p);
 
 QD_NODE *randomPlaceShips(QD_NODE *b, int *lstOfShips);
+QD_NODE *manualPlaceShips(QD_NODE *b, int *lstOfShips);
+
 void setup(int row, int col);
+int convertRotation(int rot);
+bool isAValidCoords(Coordinate *c);
+bool isInPreviousShots(Shots *lst, Coordinate c);
+void fire(QD_NODE* p1board, QD_NODE* p2board, int *p1Hp, int *p2Hp);

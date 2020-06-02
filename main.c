@@ -69,8 +69,6 @@ int main(int argc, char *argv[]){
     QD_NODE *p1, *p2;
     int p1Hp = 0, p2Hp = 0, random, rowSize, colSize;
     Coordinate c1, c2;
-    Shots *p1Shots = NULL;
-    Shots *p2Shots = NULL;
     
     int *lstOfShips;
 
@@ -111,36 +109,25 @@ int main(int argc, char *argv[]){
 	if(random == 1){
 		p1 = randomPlaceShips(p1,lstOfShips);
 	}else{
-        // manualyPlanceShips(p1,lstOfShips);
-    }
-
-    Ship s;
-    s.type = TSHAPE;
-    s.length = TSHAPE_SIZE;
-    s.rotation = ROTATION_270;
-    s.start = make_point(0,12);
-
-    QD_NODE *aux = setShip(p1, s);
-    if(aux == NULL){
-        deBug("ERROR");
-    }else{
-        p1 = aux;
+        p1 = manualPlaceShips(p1,lstOfShips);
     }
 
     printTree(p1);
-    // printWarningMsg("Player 2: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
-    // scanf("%d",&random);
-    // while(random != 1 && random != 0){
-	// 	printf("\n" KNRM "Randomly set ships ? (" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
-	// 	scanf("%d",&random);
-	// }
+    printWarningMsg("Player 2: Randomly set ships ?(" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
+    scanf("%d",&random);
+    while(random != 1 && random != 0){
+		printf("\n" KNRM "Randomly set ships ? (" KGRN "1" KNRM "/" KRED "0" KNRM "): ");
+		scanf("%d",&random);
+	}
 
-    // if(random == 1){
-	// 	randomPlaceShips(p2,lstOfShips);
-	// }else{
-    //     // manualyPlanceShips(p2,lstOfShips);
-    // }
+    if(random == 1){
+		p2 = randomPlaceShips(p2,lstOfShips);
+	}else{
+        p2 = manualPlaceShips(p2,lstOfShips);
+    }
 
+    fire(p1,p2, &p1Hp, &p2Hp);
+    
     return 0;
 }
 #endif
