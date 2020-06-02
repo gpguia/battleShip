@@ -6,19 +6,28 @@ First assignment
 
 To compile, just use the makefile:
 
+for matrix use:
+
+```bash
+make matrix
 ```
-make
+
+for quad tree use:
+
+```bash
+make qt
 ```
+
 
 To run:
 
-```
+```bash
 ./battleShip
 ```
 
 You can also run using args like:
 
-```
+```bash
 ./battleShip <ARG_1> <ARG_2>
 ```
 
